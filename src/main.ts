@@ -4,6 +4,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
+import { AuthorizationGuard } from './authorization/authorization.guard';
 
 /**
  * Initializes and starts the NestJS application using the Fastify adapter.
@@ -28,6 +29,11 @@ const bootstrap = async (): Promise<void> => {
    * Enables Cross-Origin Resource Sharing (CORS) for the application.
    */
   app.enableCors();
+
+  /**
+   * Sets the global guard for the application to the AuthorizationGuard.
+   */
+  app.useGlobalGuards(new AuthorizationGuard());
 
   /**
    * Starts the application on port 3000.

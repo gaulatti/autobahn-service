@@ -16,7 +16,13 @@ import { SettingsModule } from './settings/settings.module';
  * @module AppModule
  */
 @Module({
-  imports: [ConfigModule.forRoot(), AuthorizationModule, AssessmentsModule, EngineModule, SettingsModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    AuthorizationModule,
+    AssessmentsModule,
+    EngineModule,
+    SettingsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
