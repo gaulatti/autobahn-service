@@ -15,7 +15,7 @@ import { AppModule } from './app.module';
  * @function bootstrap
  * @returns {Promise<void>} A promise that resolves when the application has started.
  */
-const bootstrap = async () => {
+const bootstrap = async (): Promise<void> => {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
