@@ -2,6 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
+import { AuthorizationModule } from './authorization/authorization.module';
+import { AssessmentsModule } from './assessments/assessments.module';
+import { EngineModule } from './engine/engine.module';
+import { SettingsModule } from './settings/settings.module';
 
 /**
  * The main application module.
@@ -12,7 +16,7 @@ import { ConfigModule } from '@nestjs/config';
  * @module AppModule
  */
 @Module({
-  imports: [ConfigModule.forRoot()],
+  imports: [ConfigModule.forRoot(), AuthorizationModule, AssessmentsModule, EngineModule, SettingsModule],
   controllers: [AppController],
   providers: [AppService],
 })
