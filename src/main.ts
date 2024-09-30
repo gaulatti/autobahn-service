@@ -16,10 +16,22 @@ import { AppModule } from './app.module';
  * @returns {Promise<void>} A promise that resolves when the application has started.
  */
 const bootstrap = async (): Promise<void> => {
+  /**
+   * Creates an instance of the NestJS application using the Fastify adapter.
+   */
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
   );
+
+  /**
+   * Enables Cross-Origin Resource Sharing (CORS) for the application.
+   */
+  app.enableCors();
+
+  /**
+   * Starts the application on port 3000.
+   */
   await app.listen(3000);
 };
 
