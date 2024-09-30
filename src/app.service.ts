@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class AppService {
-  getHello() {
-    return {
-      region: process.env.AWS_REGION,
-      userPoolId: process.env.COGNITO_USER_POOL_ID,
-      authority: `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.COGNITO_USER_POOL_ID}`,
-    };
+  constructor(private sequelize: Sequelize) {}
+
+  async getUsers() {
+    const [response] = await this.sequelize.query('SELECT * FROM users');
+    return response;
   }
 }
