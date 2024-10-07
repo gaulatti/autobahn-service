@@ -58,3 +58,5 @@ const bootstrap = async (): Promise<void | INestApplication> => {
 };
 
 bootstrap();
+
+export { bootstrap };
