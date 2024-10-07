@@ -5,19 +5,17 @@ import {
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 import { AuthorizationGuard } from './authorization/authorization.guard';
-import { INestApplication } from '@nestjs/common';
 
 /**
  * Initializes and configures the NestJS application using the Fastify adapter.
  *
- * - Creates an instance of the NestJS application.
- * - Enables Cross-Origin Resource Sharing (CORS).
- * - Sets the global guard to `AuthorizationGuard`.
- * - If the module is the main module, starts the application on port 3000.
+ * - If the module is the main module, it starts the application on port 3000.
+ * - If the module is not the main module, it returns the application instance.
  *
- * @returns {Promise<void | INestApplication>} A promise that resolves when the application is started or returns the application instance.
+ * @returns {Promise<void | FastifyInstance>} A promise that resolves to void if the application is started,
+ * or to the Fastify instance if the application is not started.
  */
-const bootstrap = async (): Promise<void | INestApplication> => {
+const bootstrap = async () => {
   console.log(require.main === module);
   /**
    * Creates an instance of the NestJS application using the Fastify adapter.
@@ -53,7 +51,7 @@ const bootstrap = async (): Promise<void | INestApplication> => {
     /**
      * Returns the application instance.
      */
-    return app;
+    return app.getHttpAdapter().getInstance();
   }
 };
 
