@@ -8,6 +8,19 @@ import { EngineModule } from './engine/engine.module';
 import { SettingsModule } from './settings/settings.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { join } from 'path';
+import { Team } from './models/team.model';
+import { Membership } from './models/membership.model';
+import { Project } from './models/project.model';
+import { User } from './models/user.model';
+import { Assignment } from './models/assignment.model';
+import { Pulse } from './models/pulse.model';
+import { Schedule } from './models/schedule.model';
+import { Target } from './models/target.model';
+import { Url } from './models/url.model';
+import { Heartbeat } from './models/heartbeat.model';
+import { Baseline } from './models/baseline.model';
+import { Statistic } from './models/statistic.model';
+import { Engagement } from './models/engagement.model';
 
 /**
  * The main application module.
@@ -34,12 +47,27 @@ import { join } from 'path';
       }),
       inject: [ConfigService],
     }),
+    SequelizeModule.forFeature([
+      Team,
+      Membership,
+      Project,
+      User,
+      Assignment,
+      Pulse,
+      Schedule,
+      Target,
+      Url,
+      Heartbeat,
+      Baseline,
+      Statistic,
+      Engagement,
+    ]),
     AuthorizationModule,
     AssessmentsModule,
     EngineModule,
     SettingsModule,
   ],
-  controllers: [AppController, SettingsController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
