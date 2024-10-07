@@ -7,6 +7,7 @@ import { AssessmentsModule } from './assessments/assessments.module';
 import { EngineModule } from './engine/engine.module';
 import { SettingsModule } from './settings/settings.module';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { join } from 'path';
 
 /**
  * The main application module.
@@ -28,7 +29,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        models: [],
+        models: [join(__dirname, '**/*.model.ts')],
+        autoLoadModels: true,
       }),
       inject: [ConfigService],
     }),
@@ -37,7 +39,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
     EngineModule,
     SettingsModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, SettingsController],
   providers: [AppService],
 })
 export class AppModule {}
