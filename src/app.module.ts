@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { AssessmentsModule } from './assessments/assessments.module';
-import { EngineModule } from './engine/engine.module';
 import { SettingsModule } from './settings/settings.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { join } from 'path';
@@ -64,7 +63,6 @@ import { Engagement } from './models/engagement.model';
     ]),
     AuthorizationModule,
     AssessmentsModule,
-    EngineModule,
     SettingsModule,
   ],
   controllers: [AppController],
