@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Team } from './models/team.model';
+import { User } from './models/user.model';
+import { ENUMS } from './consts';
 
 @Injectable()
 export class AppService {
   constructor(
-    @InjectModel(Team)
-    private readonly team: typeof Team,
+    @InjectModel(User)
+    private readonly user: typeof User,
   ) {}
 
-  async getUsers() {
-    const response = await this.team.findAll();
-    return response;
+  async kickoff(user: { userId: string }) {
+    const me = await this.user.findOne({ where: { sub: user.userId } });
+    return { enums: ENUMS, me, features: [] };
   }
 }
