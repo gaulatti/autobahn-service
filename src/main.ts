@@ -7,15 +7,14 @@ import { AppModule } from './app.module';
 import { AuthorizationGuard } from './authorization/authorization.guard';
 
 /**
- * Initializes and configures the NestJS application using the Fastify adapter.
+ * Initializes and starts the NestJS application using the Fastify adapter.
  *
  * - If the module is the main module, it starts the application on port 3000.
- * - If the module is not the main module, it returns the application instance.
+ * - If the module is not the main module, it initializes the application and returns the instance.
  *
- * @returns {Promise<void | FastifyInstance>} A promise that resolves to void if the application is started,
- * or to the Fastify instance if the application is not started.
+ * @returns {Promise<void | NestFastifyApplication>} A promise that resolves to void if the application is started, or to the application instance if initialized.
  */
-const bootstrap = async () => {
+const bootstrap = async (): Promise<void | NestFastifyApplication> => {
   console.log(require.main === module);
   /**
    * Creates an instance of the NestJS application using the Fastify adapter.
@@ -49,9 +48,14 @@ const bootstrap = async () => {
     });
   } else {
     /**
+     * If the module is not the main module, initializes the application.
+     */
+    await app.init();
+
+    /**
      * Returns the application instance.
      */
-    return app.getHttpAdapter().getInstance();
+    return app;
   }
 };
 
