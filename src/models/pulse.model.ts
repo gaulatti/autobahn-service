@@ -107,7 +107,7 @@ export class Pulse extends Model<Pulse> {
   url?: Url;
 
   @BelongsTo(() => Membership, { foreignKey: 'triggeredBy' })
-  triggeredByMembership?: Membership;
+  membership?: Membership;
 
   @BelongsTo(() => Schedule)
   schedule?: Schedule;
