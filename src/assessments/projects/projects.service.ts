@@ -35,11 +35,10 @@ export class ProjectsService {
   }
 
   async deleteProject(uuid: string): Promise<void> {
-    await this.project.update(
-      { deletedAt: new Date() },
-      {
-        where: { uuid },
-      },
-    );
+    /**
+     * TODO: Implement Soft Delete
+     */
+    const project = await this.getProject(uuid);
+    await project.destroy();
   }
 }
