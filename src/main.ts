@@ -15,7 +15,6 @@ import { AuthorizationGuard } from './authorization/authorization.guard';
  * @returns {Promise<void | NestFastifyApplication>} A promise that resolves to void if the application is started, or to the application instance if initialized.
  */
 const bootstrap = async (): Promise<void | NestFastifyApplication> => {
-  console.log(require.main === module);
   /**
    * Creates an instance of the NestJS application using the Fastify adapter.
    */
