@@ -35,28 +35,12 @@ const bootstrap = async (): Promise<void | NestFastifyApplication> => {
   app.useGlobalGuards(new AuthorizationGuard());
 
   /**
-   * If the module is the main module, starts the application on port 3000.
-   * This allows dual usage, either locally or within Lambda.
+   * Starts the application on port 3000.
    */
-  if (require.main === module) {
-    /**
-     * Starts the application on port 3000.
-     */
-    await app.listen(3000, (err) => {
-      if (err) console.error(err);
-      console.log('Madonna listening on 3000');
-    });
-  } else {
-    /**
-     * If the module is not the main module, initializes the application.
-     */
-    await app.init();
-
-    /**
-     * Returns the application instance.
-     */
-    return app;
-  }
+  await app.listen(3000, (err) => {
+    if (err) console.error(err);
+    console.log('Madonna listening on 3000');
+  });
 };
 
 bootstrap();
