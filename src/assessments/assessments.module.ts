@@ -10,6 +10,8 @@ import { TargetsController } from './targets/targets.controller';
 import { DalModule } from 'src/dal/dal.module';
 import { HeartbeatsController } from './heartbeats/heartbeats.controller';
 import { HeartbeatsService } from './heartbeats/heartbeats.service';
+import { SchedulesService } from './schedules/schedules.service';
+import { SchedulesController } from './schedules/schedules.controller';
 
 @Module({
   imports: [DalModule],
@@ -19,6 +21,7 @@ import { HeartbeatsService } from './heartbeats/heartbeats.service';
     UrlsController,
     TargetsController,
     HeartbeatsController,
+    SchedulesController,
   ],
   providers: [
     PulsesService,
@@ -26,6 +29,7 @@ import { HeartbeatsService } from './heartbeats/heartbeats.service';
     UrlsService,
     TargetsService,
     HeartbeatsService,
+    SchedulesService,
   ],
 })
 export class AssessmentsModule {}
