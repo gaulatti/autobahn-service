@@ -2,17 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Heartbeat } from 'src/models/heartbeat.model';
 import { Membership } from 'src/models/membership.model';
-import { Pulse } from 'src/models/pulse.model';
-import { Target } from 'src/models/target.model';
-import { User } from 'src/models/user.model';
-import { Url } from 'src/models/url.model';
-import { Schedule } from 'src/models/schedule.model';
 import { Project } from 'src/models/project.model';
-import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { streamToString } from 'src/utils/s3';
-import { Readable } from 'stream';
-
-const client = new S3Client();
+import { Pulse } from 'src/models/pulse.model';
+import { Schedule } from 'src/models/schedule.model';
+import { Target } from 'src/models/target.model';
+import { Url } from 'src/models/url.model';
+import { User } from 'src/models/user.model';
 
 @Injectable()
 export class PulsesService {
@@ -66,18 +61,5 @@ export class PulsesService {
         },
       ],
     });
-  }
-
-  async getHeartbeat(uuid: string, isMobile = false): Promise<string> {
-    const bucketName = process.env.BUCKET_NAME;
-    const key = `${uuid}.${isMobile ? 'mobile' : 'desktop'}.json`;
-
-    const command = new GetObjectCommand({
-      Bucket: bucketName,
-      Key: key,
-    });
-
-    const response = await client.send(command);
-    return streamToString(response.Body as Readable);
   }
 }

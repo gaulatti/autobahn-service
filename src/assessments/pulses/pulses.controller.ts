@@ -13,14 +13,4 @@ export class PulsesController {
   getPulse(@Param('uuid') uuid: string) {
     return this.pulsesService.getPulse(uuid);
   }
-
-  @Get(':uuid/mobile')
-  getHeartbeatMobile(@Param('uuid') uuid: string) {
-    return this.pulsesService.getHeartbeat(uuid, true);
-  }
-
-  @Get(':uuid/desktop')
-  getHeartbeatDesktop(@Param('uuid') uuid: string) {
-    return this.pulsesService.getHeartbeat(uuid);
-  }
 }
