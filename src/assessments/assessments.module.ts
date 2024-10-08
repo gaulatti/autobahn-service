@@ -7,8 +7,10 @@ import { UrlsService } from './urls/urls.service';
 import { UrlsController } from './urls/urls.controller';
 import { TargetsService } from './targets/targets.service';
 import { TargetsController } from './targets/targets.controller';
+import { DalModule } from 'src/dal/dal.module';
 
 @Module({
+  imports: [DalModule],
   controllers: [
     PulsesController,
     ProjectsController,
