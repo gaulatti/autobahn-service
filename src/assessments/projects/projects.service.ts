@@ -2,10 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Project } from 'src/models/project.model';
 import { Schedule } from 'src/models/schedule.model';
-import { CreateProjectDto } from './dto/create.dto';
+import { ProjectDto } from './project.dto';
 
 @Injectable()
 export class ProjectsService {
+  projectStats(uuid: string) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectModel(Project)
     private readonly project: typeof Project,
@@ -22,11 +25,11 @@ export class ProjectsService {
     });
   }
 
-  async createProject(project: CreateProjectDto): Promise<Project> {
+  async createProject(project: ProjectDto): Promise<Project> {
     return this.project.create(project);
   }
 
-  async updateProject(uuid: string, project: Project): Promise<Project> {
+  async updateProject(uuid: string, project: ProjectDto): Promise<Project> {
     await this.project.update(project, {
       where: { uuid },
     });
