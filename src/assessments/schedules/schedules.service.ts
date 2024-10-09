@@ -2,9 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Schedule } from 'src/models/schedule.model';
 import { ProjectsService } from '../projects/projects.service';
+import { SchedulesDto } from './schedules.dto';
 
 @Injectable()
 export class SchedulesService {
+  schedulesByTarget(uuid: string) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectModel(Schedule)
     private readonly schedule: typeof Schedule,
@@ -23,13 +27,19 @@ export class SchedulesService {
     });
   }
 
-  async createSchedule(uuid: string, schedule: Schedule): Promise<Schedule> {
+  async createSchedule(
+    uuid: string,
+    schedule: SchedulesDto,
+  ): Promise<Schedule> {
     const project = await this.projectsService.getProject(uuid);
 
     return project.$create('schedule', schedule);
   }
 
-  async updateSchedule(uuid: string, schedule: Schedule): Promise<Schedule> {
+  async updateSchedule(
+    uuid: string,
+    schedule: SchedulesDto,
+  ): Promise<Schedule> {
     await this.schedule.update(schedule, {
       where: { uuid },
     });
