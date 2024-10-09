@@ -12,6 +12,8 @@ import { HeartbeatsController } from './heartbeats/heartbeats.controller';
 import { HeartbeatsService } from './heartbeats/heartbeats.service';
 import { SchedulesService } from './schedules/schedules.service';
 import { SchedulesController } from './schedules/schedules.controller';
+import { BaselinesController } from './baselines/baselines.controller';
+import { BaselinesService } from './baselines/baselines.service';
 
 @Module({
   imports: [DalModule],
@@ -22,6 +24,7 @@ import { SchedulesController } from './schedules/schedules.controller';
     TargetsController,
     HeartbeatsController,
     SchedulesController,
+    BaselinesController,
   ],
   providers: [
     PulsesService,
@@ -30,6 +33,7 @@ import { SchedulesController } from './schedules/schedules.controller';
     TargetsService,
     HeartbeatsService,
     SchedulesService,
+    BaselinesService,
   ],
 })
 export class AssessmentsModule {}
