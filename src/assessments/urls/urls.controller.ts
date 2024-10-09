@@ -12,8 +12,11 @@ export class UrlsController {
   ) {}
 
   @Get()
-  async allUrls() {
-    return this.urlsService.allUrls();
+  async allUrls(
+    @Query('startRow') startRow: number,
+    @Query('endRow') endRow: number,
+  ) {
+    return this.urlsService.allUrls(startRow, endRow);
   }
 
   @Get(':uuid/stats')
@@ -32,8 +35,6 @@ export class UrlsController {
     @Query('to') to: Date,
     @Query('startRow') startRow: number,
     @Query('endRow') endRow: number,
-    @Query('sort') sort: string,
-    @Query('filters') filters: string,
   ) {
     const url = await this.urlsService.urlByUUID(uuid);
     return this.pulsesService.pulsesByUrl(url.id, from, to, startRow, endRow);

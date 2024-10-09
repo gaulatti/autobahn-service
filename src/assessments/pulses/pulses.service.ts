@@ -19,7 +19,7 @@ export class PulsesService {
   ) {}
 
   pulsesByTarget(uuid: string) {
-    throw new Error('Method not implemented.');
+    throw new Error(`Method not implemented. Pulses for target ${uuid}`);
   }
 
   /**
@@ -41,7 +41,7 @@ export class PulsesService {
   ) {
     const paginationParams = getPaginationParams(startRow, endRow);
 
-    return this.pulse.findAll({
+    return this.pulse.findAndCountAll({
       ...paginationParams,
       where: {
         urlId: id,
@@ -49,20 +49,38 @@ export class PulsesService {
           [Op.between]: [from, to],
         },
       },
-      include: [{ model: Heartbeat, as: 'heartbeats' }],
+      include: [
+        { model: Heartbeat, as: 'heartbeats' },
+        {
+          model: Membership,
+          include: [
+            {
+              model: User,
+            },
+          ],
+        },
+      ],
     });
   }
 
   /**
-   * Retrieves all pulses along with their associated Heartbeat, Url, Target,
-   * and Membership models. The Membership model includes associated User models.
-   * The results are distinct and include a count of the total number of pulses.
+   * Retrieves all pulses within a specified date range, with optional pagination.
    *
-   * @returns {Promise<{ rows: Pulse[], count: number }>} A promise that resolves
-   * to an object containing an array of pulses and the total count.
+   * @param {Date} [from] - The start date for filtering pulses.
+   * @param {Date} [to] - The end date for filtering pulses.
+   * @param {number} [startRow] - The starting row for pagination.
+   * @param {number} [endRow] - The ending row for pagination.
+   * @returns {Promise<{ rows: Pulse[]; count: number }>} A promise that resolves to an object containing the rows of pulses and the total count.
    */
-  async allPulses(): Promise<{ rows: Pulse[]; count: number }> {
+  async allPulses(
+    from?: Date,
+    to?: Date,
+    startRow?: number,
+    endRow?: number,
+  ): Promise<{ rows: Pulse[]; count: number }> {
+    const paginationParams = getPaginationParams(startRow, endRow);
     return this.pulse.findAndCountAll({
+      ...paginationParams,
       include: [
         { model: Heartbeat },
         { model: Url },
@@ -76,10 +94,28 @@ export class PulsesService {
           ],
         },
       ],
+      where: {
+        createdAt: {
+          [Op.between]: [from, to],
+        },
+      },
       distinct: true,
     });
   }
 
+  /**
+   * Retrieves a pulse by its UUID.
+   *
+   * @param uuid - The unique identifier of the pulse.
+   * @returns A promise that resolves to the Pulse object.
+   *
+   * The returned Pulse object includes associated models:
+   * - Heartbeat
+   * - Url
+   * - Target
+   * - Schedule (including Project)
+   * - Membership (including User)
+   */
   getPulse(uuid: string): Promise<Pulse> {
     return this.pulse.findOne({
       where: { uuid },
