@@ -18,8 +18,45 @@ export class PulsesService {
     private readonly pulse: typeof Pulse,
   ) {}
 
-  pulsesByTarget(uuid: string) {
-    throw new Error(`Method not implemented. Pulses for target ${uuid}`);
+  /**
+   * Retrieves pulses by target ID within a specified date range and with optional pagination.
+   *
+   * @param id - The target ID to filter pulses.
+   * @param from - The start date of the date range (optional).
+   * @param to - The end date of the date range (optional).
+   * @param startRow - The starting row for pagination (optional).
+   * @param endRow - The ending row for pagination (optional).
+   * @returns A promise that resolves to an object containing the pulses and the count of pulses.
+   */
+  pulsesByTarget(
+    id: number,
+    from?: Date,
+    to?: Date,
+    startRow?: number,
+    endRow?: number,
+  ) {
+    const paginationParams = getPaginationParams(startRow, endRow);
+
+    return this.pulse.findAndCountAll({
+      ...paginationParams,
+      where: {
+        targetId: id,
+        createdAt: {
+          [Op.between]: [from, to],
+        },
+      },
+      include: [
+        { model: Heartbeat, as: 'heartbeats' },
+        {
+          model: Membership,
+          include: [
+            {
+              model: User,
+            },
+          ],
+        },
+      ],
+    });
   }
 
   /**

@@ -25,7 +25,17 @@ export class UrlsController {
     @Query('from') from: Date,
     @Query('to') to: Date,
   ) {
-    return this.urlsService.urlStats(uuid, from, to);
+    /**
+     * Fetch the URL record by UUID
+     */
+    const url = await this.urlsService.urlByUUID(uuid);
+
+    /**
+     * Fetch the stats for the target
+     */
+    const stats = await this.urlsService.urlStats(url.id, from, to);
+
+    return { url, ...stats };
   }
 
   @Get(':uuid/pulses')

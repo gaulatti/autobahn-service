@@ -4,6 +4,7 @@ import { Url } from 'src/models/url.model';
 import { PulsesService } from '../pulses/pulses.service';
 import { calculateCWVStats, calculateScores } from 'src/utils/stats';
 import { getPaginationParams } from 'src/utils/lists';
+import { Pulse } from 'src/models/pulse.model';
 
 @Injectable()
 export class UrlsService {
@@ -34,8 +35,18 @@ export class UrlsService {
     return this.url.findOne({ where: { uuid } });
   }
 
-  async urlsByTarget(uuid: string) {
-    throw new Error(`Method not implemented (URLs for uuid ${uuid})`);
+  async urlsByTarget(id: number) {
+    return this.url.findAndCountAll({
+      include: [
+        {
+          model: Pulse,
+          as: 'pulses',
+          where: { targets_id: id },
+          required: true,
+        },
+      ],
+      distinct: true,
+    });
   }
 
   /**
@@ -52,16 +63,11 @@ export class UrlsService {
    * - Filters out pulses that don't have any completed heartbeats.
    * - Calculates scores and CWV stats for the filtered pulses.
    */
-  async urlStats(uuid: string, from: Date, to: Date) {
-    /**
-     * Fetch the URL record by UUID
-     */
-    const url = await this.urlByUUID(uuid);
-
+  async urlStats(id: number, from: Date, to: Date) {
     /**
      * Fetch the pulses for the provided URL
      */
-    const pulses = await this.pulsesService.pulsesByUrl(url.id, from, to);
+    const pulses = await this.pulsesService.pulsesByUrl(id, from, to);
 
     /**
      * Filter out pulses that don't have any completed heartbeats
@@ -77,6 +83,6 @@ export class UrlsService {
     const scores = calculateScores(statPulses);
     const cwvStats = calculateCWVStats(statPulses);
 
-    return { url, cwvStats, scores };
+    return { cwvStats, scores };
   }
 }

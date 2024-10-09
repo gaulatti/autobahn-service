@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { PulsesService } from '../pulses/pulses.service';
 import { SchedulesService } from '../schedules/schedules.service';
@@ -23,8 +24,11 @@ export class TargetsController {
   ) {}
 
   @Get()
-  async allTargets() {
-    return this.targetsService.allTargets();
+  async allTargets(
+    @Query('startRow') startRow: number,
+    @Query('endRow') endRow: number,
+  ) {
+    return this.targetsService.allTargets(startRow, endRow);
   }
 
   @Post()
@@ -48,8 +52,47 @@ export class TargetsController {
   }
 
   @Get(':uuid/pulses')
-  async pulses(@Param('uuid') uuid: string) {
-    return this.pulsesService.pulsesByTarget(uuid);
+  async pulses(
+    @Param('uuid') uuid: string,
+    @Query('from') from: Date,
+    @Query('to') to: Date,
+    @Query('startRow') startRow: number,
+    @Query('endRow') endRow: number,
+  ) {
+    /**
+     * Fetch the URL record by UUID
+     */
+    const target = await this.targetsService.targetByUUID(uuid);
+
+    /**
+     * Fetch all pulses associated with the target
+     */
+    return this.pulsesService.pulsesByTarget(
+      target.id,
+      from,
+      to,
+      startRow,
+      endRow,
+    );
+  }
+
+  @Get(':uuid/stats')
+  async stats(
+    @Param('uuid') uuid: string,
+    @Query('from') from: Date,
+    @Query('to') to: Date,
+  ) {
+    /**
+     * Fetch the URL record by UUID
+     */
+    const target = await this.targetsService.targetByUUID(uuid);
+
+    /**
+     * Fetch the stats for the target
+     */
+    const stats = await this.targetsService.targetStats(target.id, from, to);
+
+    return { target, ...stats };
   }
 
   @Get(':uuid/schedules')
@@ -59,6 +102,11 @@ export class TargetsController {
 
   @Get(':uuid/urls')
   async urls(@Param('uuid') uuid: string) {
-    return this.urlsService.urlsByTarget(uuid);
+    /**
+     * Fetch the URL record by UUID
+     */
+    const target = await this.targetsService.targetByUUID(uuid);
+
+    return this.urlsService.urlsByTarget(target.id);
   }
 }
