@@ -9,6 +9,7 @@ export class ProjectsService {
   projectStats(uuid: string) {
     throw new Error('Method not implemented.');
   }
+
   constructor(
     @InjectModel(Project)
     private readonly project: typeof Project,
@@ -25,12 +26,12 @@ export class ProjectsService {
     });
   }
 
-  async createProject(project: ProjectDto): Promise<Project> {
-    return this.project.create(project);
+  async createProject(dto: ProjectDto): Promise<Project> {
+    return this.project.create(dto);
   }
 
-  async updateProject(uuid: string, project: ProjectDto): Promise<Project> {
-    await this.project.update(project, {
+  async updateProject(uuid: string, dto: ProjectDto): Promise<Project> {
+    await this.project.update(dto, {
       where: { uuid },
     });
 
@@ -41,7 +42,7 @@ export class ProjectsService {
     /**
      * TODO: Implement Soft Delete
      */
-    const project = await this.getProject(uuid);
-    await project.destroy();
+    const item = await this.getProject(uuid);
+    await item.destroy();
   }
 }
