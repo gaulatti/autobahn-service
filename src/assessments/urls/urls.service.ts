@@ -35,6 +35,38 @@ export class UrlsService {
     return this.url.findOne({ where: { uuid } });
   }
 
+  /**
+   * Retrieves or creates a URL entry based on the fully qualified domain name (FQDN).
+   *
+   * @param url - The fully qualified domain name to search for or create.
+   * @returns The existing URL entry if found, otherwise a new URL entry is created and returned.
+   */
+  async urlByFQDN(url: string) {
+    const item = await this.url.findOne({ where: { url } });
+
+    if (!item) {
+      return await this.createUrl(url);
+    }
+
+    return item;
+  }
+
+  /**
+   * Creates a new URL entry in the database.
+   *
+   * @param url - The URL string to be created.
+   * @returns A promise that resolves to the created URL object.
+   */
+  async createUrl(url: string) {
+    return await this.url.create({ url });
+  }
+
+  /**
+   * Retrieves URLs associated with a specific target ID.
+   *
+   * @param id - The ID of the target to filter URLs by.
+   * @returns A promise that resolves to an object containing the count of URLs and an array of URL instances.
+   */
   async urlsByTarget(id: number) {
     return this.url.findAndCountAll({
       include: [

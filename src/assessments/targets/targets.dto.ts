@@ -1,1 +1,5 @@
-export class TargetsDto {}
+export class TargetsDto {
+  stage: number;
+  name: string;
+  target: string;
+}

@@ -5,12 +5,14 @@ import { getPaginationParams } from 'src/utils/lists';
 import { calculateCWVStats, calculateScores } from 'src/utils/stats';
 import { PulsesService } from '../pulses/pulses.service';
 import { TargetsDto } from './targets.dto';
+import { UrlsService } from '../urls/urls.service';
 
 @Injectable()
 export class TargetsService {
   constructor(
     @InjectModel(Target) private readonly target: typeof Target,
     private readonly pulsesService: PulsesService,
+    private readonly urlsService: UrlsService,
   ) {}
 
   /**
@@ -54,9 +56,9 @@ export class TargetsService {
    * @returns A promise that resolves to the updated target.
    */
   async updateTarget(uuid: string, dto: TargetsDto) {
-    await this.target.update(dto, {
-      where: { uuid },
-    });
+    const { stage, name } = dto;
+
+    await this.target.update({ stage, name }, { where: { uuid } });
 
     return this.getTarget(uuid);
   }
@@ -67,8 +69,19 @@ export class TargetsService {
    * @param dto - The data transfer object containing the target details.
    * @returns The created target object.
    */
-  createTarget(dto: TargetsDto) {
-    return this.target.create({ ...dto, provider: 1 });
+  async createTarget(dto: TargetsDto) {
+    const { stage, name } = dto;
+    console.log({ dto });
+
+    /**
+     * Fetch the URL record by the fully qualified domain name (FQDN)
+     */
+    const url = await this.urlsService.urlByFQDN(dto.target);
+
+    /**
+     * Create the target record
+     */
+    return this.target.create({ stage, name, urlId: url.id, provider: 1 });
   }
 
   /**
