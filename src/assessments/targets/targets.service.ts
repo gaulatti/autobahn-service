@@ -58,7 +58,15 @@ export class TargetsService {
   async updateTarget(uuid: string, dto: TargetsDto) {
     const { stage, name } = dto;
 
-    await this.target.update({ stage, name }, { where: { uuid } });
+    /**
+     * Fetch the URL record by the fully qualified domain name (FQDN)
+     */
+    const url = await this.urlsService.urlByFQDN(dto.target);
+
+    await this.target.update(
+      { stage, name, urlId: url.id },
+      { where: { uuid } },
+    );
 
     return this.getTarget(uuid);
   }
@@ -71,7 +79,6 @@ export class TargetsService {
    */
   async createTarget(dto: TargetsDto) {
     const { stage, name } = dto;
-    console.log({ dto });
 
     /**
      * Fetch the URL record by the fully qualified domain name (FQDN)
@@ -123,7 +130,7 @@ export class TargetsService {
     return this.target.findOne({ where: { uuid } });
   }
 
-  targetsByUrl(uuid: string) {
-    throw new Error('Method not implemented.');
+  async targetsByUrl(uuid: string) {
+    throw new Error(`Method not implemented. Targets by URL ${uuid}`);
   }
 }

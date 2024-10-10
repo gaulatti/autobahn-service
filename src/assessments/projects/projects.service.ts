@@ -3,13 +3,10 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Project } from 'src/models/project.model';
 import { Schedule } from 'src/models/schedule.model';
 import { ProjectDto } from './project.dto';
+import { Target } from 'src/models/target.model';
 
 @Injectable()
 export class ProjectsService {
-  projectStats(uuid: string) {
-    throw new Error('Method not implemented.');
-  }
-
   constructor(
     @InjectModel(Project)
     private readonly project: typeof Project,
@@ -22,7 +19,7 @@ export class ProjectsService {
   async getProject(uuid: string): Promise<Project> {
     return this.project.findOne({
       where: { uuid },
-      include: [{ model: Schedule }],
+      include: [{ model: Schedule, include: [{ model: Target }] }],
     });
   }
 
@@ -44,5 +41,9 @@ export class ProjectsService {
      */
     const item = await this.getProject(uuid);
     await item.destroy();
+  }
+
+  async projectStats(uuid: string) {
+    throw new Error(`Method not implemented. (projectStats for ${uuid})`);
   }
 }

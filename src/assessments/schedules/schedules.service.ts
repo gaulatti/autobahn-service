@@ -6,8 +6,8 @@ import { SchedulesDto } from './schedules.dto';
 
 @Injectable()
 export class SchedulesService {
-  schedulesByTarget(uuid: string) {
-    throw new Error('Method not implemented.');
+  async schedulesByTarget(uuid: string) {
+    throw new Error(`Method not implemented. (schedulesByTarget for ${uuid})`);
   }
   constructor(
     @InjectModel(Schedule)
@@ -33,7 +33,11 @@ export class SchedulesService {
   ): Promise<Schedule> {
     const project = await this.projectsService.getProject(uuid);
 
-    return project.$create('schedule', schedule);
+    return project.$create('schedule', {
+      ...schedule,
+      provider: 1,
+      nextExecution: new Date(),
+    });
   }
 
   async updateSchedule(
