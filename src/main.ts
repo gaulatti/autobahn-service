@@ -1,20 +1,22 @@
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
+import { JsonLogger } from './utils/logger';
 import { AuthorizationGuard } from './authorization/authorization.guard';
 
 /**
- * Initializes and starts the NestJS application using the Fastify adapter.
- *
- * - If the module is the main module, it starts the application on port 3000.
- * - If the module is not the main module, it initializes the application and returns the instance.
- *
- * @returns {Promise<void | NestFastifyApplication>} A promise that resolves to void if the application is started, or to the application instance if initialized.
+ * Sets the logger for the application to the JsonLogger.
  */
-const bootstrap = async (): Promise<void | NestFastifyApplication> => {
+if (process.env.CONTAINERIZED === 'true') {
+  const jsonLogger = new JsonLogger();
+  Logger.overrideLogger(jsonLogger);
+}
+
+async function bootstrap() {
   /**
    * Creates an instance of the NestJS application using the Fastify adapter.
    */
@@ -33,15 +35,7 @@ const bootstrap = async (): Promise<void | NestFastifyApplication> => {
    */
   app.useGlobalGuards(new AuthorizationGuard());
 
-  /**
-   * Starts the application on port 3000.
-   */
-  await app.listen(3000, (err) => {
-    if (err) console.error(err);
-    console.log('Madonna listening on 3000');
-  });
-};
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+}
 
 bootstrap();
-
-export { bootstrap };

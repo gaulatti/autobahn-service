@@ -1,0 +1,75 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Configure AWS Credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # Step 2: Log in to Amazon ECR
+      - name: Log in to Amazon ECR
+        run: |
+          aws ecr get-login-password --region ${{ vars.AWS_REGION }} | \
+          docker login --username AWS --password-stdin ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+
+      # Step 3: Build the Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t autobahn:latest .
+
+      # Step 4: Tag the Docker image
+      - name: Tag Docker image
+        run: |
+          docker tag autobahn:latest ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/autobahn:latest
+
+      # Step 5: Push the Docker image to ECR
+      - name: Push Docker image to ECR
+        run: |
+          docker push ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/autobahn:latest
+
+      # Step 6: Deploy to on-premises server
+      - name: Deploy to on-premises host
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ vars.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            aws ecr get-login-password --region ${{ vars.AWS_REGION }} | \
+            docker login --username AWS --password-stdin ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+            docker pull ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/autobahn:latest
+
+            # Stop and remove any running container with the same name
+            docker stop autobahn || true
+            docker rm autobahn || true
+
+            # Run the new container
+            docker run -d --name autobahn \
+            -p 3000:3000 \
+            -e AWS_REGION=${{ vars.AWS_REGION }} \
+            -e COGNITO_USER_POOL_ID=${{ vars.COGNITO_USER_POOL_ID }} \
+            -e ALLOWED_TOPICS="${{ vars.ALLOWED_TOPICS }}" \
+            -e CONTAINERIZED=true \
+            --restart=always \
+            --log-driver=awslogs \
+            --log-opt awslogs-region=${{ vars.AWS_REGION }} \
+            --log-opt awslogs-group=${{ vars.LOGS_GROUP }} \
+            --log-opt awslogs-stream=${{ vars.LOGS_STREAM }} \
+            -v ~/.aws:/root/.aws:ro \
+            ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/autobahn:latest

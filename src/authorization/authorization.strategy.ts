@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, ExtractJwt } from 'passport-jwt';
-import { passportJwtSecret } from 'jwks-rsa';
 import { ConfigService } from '@nestjs/config';
+import { PassportStrategy } from '@nestjs/passport';
+import { passportJwtSecret } from 'jwks-rsa';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
 /**
  * Constructs the JWKS (JSON Web Key Set) URI for a given AWS Cognito user pool.
@@ -61,7 +61,7 @@ export class AuthorizationStrategy extends PassportStrategy(Strategy) {
    * - `issuer`: The issuer of the JWT, constructed using the AWS region and Cognito user pool ID from the configuration service.
    * - `algorithms`: Specifies the algorithms allowed for JWT validation, in this case, `RS256`.
    */
-  constructor(private configService: ConfigService) {
+  constructor(configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKeyProvider: passportJwtSecret({
@@ -82,12 +82,12 @@ export class AuthorizationStrategy extends PassportStrategy(Strategy) {
   }
 
   /**
-   * Validates the JWT payload and extracts user information.
+   * Validates the provided payload by updating the user information.
    *
-   * @param payload - The JWT payload containing user information.
-   * @returns An object containing the userId and username extracted from the payload.
+   * @param payload - The payload containing user information to be validated and updated.
+   * @returns The updated user information.
    */
   async validate(payload: any) {
-    return { userId: payload.sub, username: payload['cognito:username'] };
+    return payload;
   }
 }
