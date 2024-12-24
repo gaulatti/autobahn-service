@@ -61,7 +61,7 @@ jobs:
 
             # Run the new container
             docker run -d --name autobahn \
-            -p 3001:3001 \
+            -p 3001:3000 \
             -e AWS_REGION=${{ vars.AWS_REGION }} \
             -e COGNITO_USER_POOL_ID=${{ vars.COGNITO_USER_POOL_ID }} \
             -e ALLOWED_TOPICS="${{ vars.ALLOWED_TOPICS }}" \

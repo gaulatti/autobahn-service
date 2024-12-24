@@ -6,6 +6,9 @@ import { AuthorizationModule } from './authorization/authorization.module';
 import { CoreModule } from './core/core.module';
 import { DalModule } from './dal/dal.module';
 import { SettingsModule } from './settings/settings.module';
+import { CloudWatchService } from './core/cloudwatch/cloudwatch.service';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { MetricsInterceptor } from './core/metrics/metrics.interceptor';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -15,6 +18,13 @@ import { SettingsModule } from './settings/settings.module';
     AuthorizationModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    CloudWatchService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: MetricsInterceptor,
+    },
+  ],
 })
 export class AppModule {}
