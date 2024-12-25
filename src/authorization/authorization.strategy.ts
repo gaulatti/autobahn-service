@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { passportJwtSecret } from 'jwks-rsa';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { UsersService } from './users/users.service';
 
 /**
  * Constructs the JWKS (JSON Web Key Set) URI for a given AWS Cognito user pool.
@@ -22,6 +23,7 @@ const buildJwksUri = (region: string, poolId: string) =>
  * This class implements a JWT-based authorization strategy using Passport.js. It extracts the JWT from the Authorization header as a Bearer token and validates it using the JWKS endpoint.
  *
  * @param {ConfigService} configService - The configuration service used to retrieve necessary configuration values.
+ * @param {UsersService} usersService - The users service used to update user information.
  *
  * @description
  * The strategy is configured with the following options:
@@ -50,6 +52,7 @@ export class AuthorizationStrategy extends PassportStrategy(Strategy) {
    * Constructs an instance of the authorization strategy.
    *
    * @param configService - The configuration service used to retrieve necessary configuration values.
+   * @param usersService - The users service used to update user information.
    *
    * The strategy is configured with the following options:
    * - `jwtFromRequest`: Extracts the JWT from the Authorization header as a Bearer token.
@@ -61,7 +64,10 @@ export class AuthorizationStrategy extends PassportStrategy(Strategy) {
    * - `issuer`: The issuer of the JWT, constructed using the AWS region and Cognito user pool ID from the configuration service.
    * - `algorithms`: Specifies the algorithms allowed for JWT validation, in this case, `RS256`.
    */
-  constructor(configService: ConfigService) {
+  constructor(
+    configService: ConfigService,
+    private readonly usersService: UsersService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKeyProvider: passportJwtSecret({
@@ -88,6 +94,6 @@ export class AuthorizationStrategy extends PassportStrategy(Strategy) {
    * @returns The updated user information.
    */
   async validate(payload: any) {
-    return payload;
+    return await this.usersService.updateUser(payload);
   }
 }
