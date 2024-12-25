@@ -14,6 +14,16 @@ abstract class CommonNotifications implements INotificationsService {
   abstract sendMessageToClient(clientId: string, message: string): void;
   abstract disconnect(clientId: string): void;
   abstract broadcast(message: object): void;
+
+  /**
+   * Broadcasts an action to refresh the pulses table.
+   *
+   * This method sends a broadcast message with the action type 'REFRESH_PULSES_TABLE'
+   * to notify any listeners that the pulses table should be refreshed.
+   */
+  public refreshPulsesTable() {
+    this.broadcast({ action: 'REFRESH_PULSES_TABLE' });
+  }
 }
 
 export { CommonNotifications };

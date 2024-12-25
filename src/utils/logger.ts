@@ -4,7 +4,30 @@ import { ConsoleLogger, LoggerService } from '@nestjs/common';
  * A logger service that outputs log messages in JSON format to the console.
  * Implements the LoggerService interface.
  */
-export class JsonLogger extends ConsoleLogger implements LoggerService {
+export class JSONLogger extends ConsoleLogger implements LoggerService {
+  /**
+   * A flag indicating whether the logger is enabled.
+   *
+   * Ideally, the JSON Logger should be enabled only in containerized environments
+   * to enable easy CloudWatch logging.
+   */
+  private enabled = process.env.CONTAINERIZED === 'true';
+
+  /**
+   * The realm for the logger.
+   */
+  private realm: string;
+
+  /**
+   * Creates an instance of the logger.
+   *
+   * @param realm - An optional string representing the realm or context for the logger.
+   */
+  constructor(realm?: string) {
+    super();
+    this.realm = realm;
+  }
+
   /**
    * Logs a message with a specified level and optional context.
    *
@@ -12,15 +35,20 @@ export class JsonLogger extends ConsoleLogger implements LoggerService {
    * @param message - The message to log. Can be of any type.
    * @param context - Optional. Additional context or metadata to include with the log message.
    */
-  private logMessage(level: string, message: any, context?: string) {
-    console.log(
-      JSON.stringify({
-        level,
-        message,
-        context,
-        timestamp: new Date().toISOString(),
-      }),
-    );
+  private logMessage(level: string, message: any, context?: any) {
+    if (this.enabled) {
+      console.log(
+        JSON.stringify({
+          level,
+          message,
+          context,
+          timestamp: new Date().toISOString(),
+          realm: this.realm,
+        }),
+      );
+    } else {
+      console.log(message, context, this.realm);
+    }
   }
 
   /**
@@ -29,7 +57,7 @@ export class JsonLogger extends ConsoleLogger implements LoggerService {
    * @param message - The message to log. Can be of any type.
    * @param context - Optional. The context or source of the log message.
    */
-  log(message: any, context?: string) {
+  log(message: any, context?: any) {
     this.logMessage('log', message, context);
   }
 
@@ -40,10 +68,10 @@ export class JsonLogger extends ConsoleLogger implements LoggerService {
    * @param trace - Optional. A string representing the stack trace or additional trace information.
    * @param context - Optional. A string representing the context in which the error occurred.
    */
-  error(message: any, trace?: string, context?: string) {
+  error(message: any, trace?: string, context?: any) {
     this.logMessage('error', message, context);
     if (trace) {
-      console.error(trace);
+      this.error(trace);
     }
   }
 
@@ -53,7 +81,7 @@ export class JsonLogger extends ConsoleLogger implements LoggerService {
    * @param message - The warning message to log. Can be of any type.
    * @param context - Optional. The context in which the warning occurred.
    */
-  warn(message: any, context?: string) {
+  warn(message: any, context?: any) {
     this.logMessage('warn', message, context);
   }
 
@@ -63,7 +91,7 @@ export class JsonLogger extends ConsoleLogger implements LoggerService {
    * @param message - The message to log. Can be of any type.
    * @param context - Optional. The context in which the message is logged.
    */
-  debug(message: any, context?: string) {
+  debug(message: any, context?: any) {
     this.logMessage('debug', message, context);
   }
 
@@ -73,7 +101,7 @@ export class JsonLogger extends ConsoleLogger implements LoggerService {
    * @param message - The message to log. Can be of any type.
    * @param context - An optional string providing additional context about the message.
    */
-  verbose(message: any, context?: string) {
+  verbose(message: any, context?: any) {
     this.logMessage('verbose', message, context);
   }
 
@@ -86,3 +114,9 @@ export class JsonLogger extends ConsoleLogger implements LoggerService {
     this.logMessage('sequelize', message);
   }
 }
+
+/**
+ * A singleton instance of the JsonLogger class.
+ */
+const logger = new JSONLogger();
+export { logger };

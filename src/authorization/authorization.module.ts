@@ -31,6 +31,6 @@ import { UsersService } from './users/users.service';
     JwtModule.register({}),
   ],
   providers: [AuthorizationStrategy, UsersService, TeamsService],
-  exports: [AuthorizationStrategy],
+  exports: [AuthorizationStrategy, UsersService, TeamsService],
 })
 export class AuthorizationModule {}
