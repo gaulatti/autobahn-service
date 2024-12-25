@@ -29,11 +29,11 @@ export class UsersService {
 
   async updateUser(payload: {
     sub: string;
-    name: string;
+    given_name: string;
     family_name: string;
     email: string;
   }): Promise<User> {
-    const { sub, name, family_name, email } = payload;
+    const { sub, given_name: name, family_name, email } = payload;
 
     /**
      * Retrieve the user by their subject identifier (sub).
@@ -46,7 +46,11 @@ export class UsersService {
     /**
      * If the user does not have the required fields, update them.
      */
-    if (!user.name || !user.last_name || !user.email) {
+    if (
+      user.name !== name ||
+      user.last_name !== family_name ||
+      user.email !== email
+    ) {
       await user.update({ name, last_name: family_name, email });
     }
 
