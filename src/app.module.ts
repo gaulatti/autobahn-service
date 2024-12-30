@@ -9,11 +9,13 @@ import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AssessmentsModule } from './assessments/assessments.module';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { CloudWatchService } from './core/cloudwatch/cloudwatch.service';
 import { CoreModule } from './core/core.module';
 import { MetricsInterceptor } from './core/metrics/metrics.interceptor';
 import { DalModule } from './dal/dal.module';
+import { EngineModule } from './engine/engine.module';
 import { SettingsModule } from './settings/settings.module';
 
 /**
@@ -83,6 +85,8 @@ const secretsManager = new SecretsManagerClient();
     DalModule,
     SettingsModule,
     AuthorizationModule,
+    AssessmentsModule,
+    EngineModule,
   ],
   controllers: [AppController],
   providers: [

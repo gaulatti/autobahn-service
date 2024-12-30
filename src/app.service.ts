@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Membership } from './models/membership.model';
 import { Team } from './models/team.model';
 import { User } from './models/user.model';
+import { ENUMS } from './consts';
 
 @Injectable()
 export class AppService {
@@ -19,7 +20,7 @@ export class AppService {
     return {
       me,
       features: [],
-      enums: [],
+      enums: ENUMS,
     };
   }
 }
