@@ -356,6 +356,7 @@ export class PlaylistsService {
       }
     } catch (error) {
       this.logger.error('Fatal on Segue:', JSON.stringify(error));
+      throw error;
     }
   }
 

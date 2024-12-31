@@ -1,7 +1,7 @@
 import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { randomUUID } from 'crypto';
+import { nanoid } from 'nanoid';
 import { Op } from 'sequelize';
 import { UsersService } from 'src/authorization/users/users.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
@@ -190,7 +190,7 @@ export class PulsesService {
     /**
      * Create a new pulse record.
      */
-    const slug = randomUUID();
+    const slug = nanoid();
     const pulse = await this.pulse.create({
       slug,
       urlId: urlRecord.id,
