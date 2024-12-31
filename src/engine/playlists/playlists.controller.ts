@@ -37,7 +37,7 @@ export class PlaylistsController {
       /**
        * This will be removed as soon as the subscription is confirmed.
        */
-      const subscribeUrl = body['SubscribeURL'];
+      const subscribeUrl = parsedBody['SubscribeURL'];
       await this.confirmSubscription(subscribeUrl);
     } else if (messageType === 'Notification') {
       /**
@@ -66,7 +66,7 @@ export class PlaylistsController {
       /**
        * This will be removed as soon as the subscription is confirmed.
        */
-      const subscribeUrl = body['SubscribeURL'];
+      const subscribeUrl = parsedBody['SubscribeURL'];
       await this.confirmSubscription(subscribeUrl);
     } else if (messageType === 'Notification') {
       /**
