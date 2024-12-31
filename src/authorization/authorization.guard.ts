@@ -38,7 +38,10 @@ export class AuthorizationGuard extends AuthGuard('jwt') {
      * Check if the request URL is allowlisted and the TopicArn
      * is in the allowedTopics array.
      */
-    if (allowedTopics.includes(JSON.parse(request.body || '{}').TopicArn)) {
+    if (
+      typeof request.body == 'string' &&
+      allowedTopics.includes(JSON.parse(request.body || '{}').TopicArn)
+    ) {
       return true;
     }
 
