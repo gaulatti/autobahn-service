@@ -63,7 +63,7 @@ jobs:
             docker run -d --name autobahn \
             -p 3001:3000 \
             -e AWS_REGION=${{ vars.AWS_REGION }} \
-            -secrets AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }} \
+            -e AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }} \
             -e ADHOC_TRIGGER_LAMBDA_ARN=${{ secrets.ADHOC_TRIGGER_LAMBDA_ARN }} \
             -e COGNITO_USER_POOL_ID=${{ secrets.COGNITO_USER_POOL_ID }} \
             -e ALLOWED_TOPICS="${{ secrets.ALLOWED_TOPICS }}" \
