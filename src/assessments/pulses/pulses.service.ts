@@ -74,6 +74,7 @@ export class PulsesService {
         { model: Url, as: 'url' },
         Target,
       ],
+      distinct: true,
     });
   }
 
@@ -110,6 +111,7 @@ export class PulsesService {
         { model: Heartbeat, as: 'heartbeats' },
         { model: Url, as: 'url' },
       ],
+      distinct: true,
     });
   }
 
