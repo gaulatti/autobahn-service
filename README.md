@@ -1,5 +1,7 @@
 # 🚀 **Autobahn Service**
 
+[![Deploy](https://github.com/gaulatti/autobahn-service/actions/workflows/deploy.yml/badge.svg)](https://github.com/gaulatti/autobahn-service/actions/workflows/deploy.yml)
+
 ## 🛠️ **Introduction**
 
 The **Autobahn Service** is a high-performance backend platform designed for managing and orchestrating web performance audits, data pipelines, and real-time monitoring. Built with **NestJS**, the service provides a modular, scalable, and secure foundation for modern web applications. It integrates seamlessly with **MySQL** for data management, **AWS Cognito** for authentication, and **AWS CloudWatch** for monitoring, enabling end-to-end workflow automation.
