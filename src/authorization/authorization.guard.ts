@@ -33,7 +33,7 @@ export class AuthorizationGuard extends AuthGuard('jwt') {
      * Extract the request object from the context.
      */
     const request = context.switchToHttp().getRequest();
-
+    console.log({ body: request.body, type: );
     /**
      * Check if the request URL is allowlisted and the TopicArn
      * is in the allowedTopics array.
