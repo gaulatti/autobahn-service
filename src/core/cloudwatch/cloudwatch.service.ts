@@ -49,20 +49,20 @@ export class CloudWatchService {
     unit: StandardUnit = StandardUnit.Count,
   ) {
     /**
+     * Skip sending metrics if the application is not running in a container.
+     * This is useful to avoid sending metrics from local development environments.
+     */
+    if (process.env.CONTAINERIZED !== 'true') {
+      return;
+    }
+
+    /**
      * Convert the dimensions object to an array of dimension objects.
      */
     const dimensionsArray = Object.keys(dimensions).map((key) => ({
       Name: key,
       Value: dimensions[key],
     }));
-
-    /**
-     * Add a dimension for the stage of the application.
-     */
-    dimensionsArray.push({
-      Name: 'Stage',
-      Value: process.env.CONTAINERIZED === 'true' ? 'Prod' : 'Local',
-    });
 
     /**
      * Parameters for the PutMetricDataCommand.

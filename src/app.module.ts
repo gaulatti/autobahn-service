@@ -4,6 +4,7 @@ import {
 } from '@aws-sdk/client-secrets-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { join } from 'path';
 import { AppController } from './app.controller';
@@ -12,6 +13,7 @@ import { AssessmentsModule } from './assessments/assessments.module';
 import { AuthorizationModule } from './authorization/authorization.module';
 import { CloudWatchService } from './core/cloudwatch/cloudwatch.service';
 import { CoreModule } from './core/core.module';
+import { MetricsInterceptor } from './core/metrics/metrics.interceptor';
 import { DalModule } from './dal/dal.module';
 import { EngineModule } from './engine/engine.module';
 import { SettingsModule } from './settings/settings.module';
@@ -90,16 +92,10 @@ const secretsManager = new SecretsManagerClient();
   providers: [
     AppService,
     CloudWatchService,
-    /**
-     * Disabling by now, as it's publishing a metric per every URL hit.
-     * That will skyrocket the costs.
-     *
-     * https://github.com/gaulatti/autobahn-service/issues/1
-     */
-    // {
-    //   provide: APP_INTERCEPTOR,
-    //   useClass: MetricsInterceptor,
-    // },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: MetricsInterceptor,
+    },
   ],
 })
 export class AppModule {}
