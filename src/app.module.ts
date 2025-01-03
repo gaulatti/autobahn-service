@@ -5,6 +5,7 @@ import {
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { join } from 'path';
 import { AppController } from './app.controller';
@@ -25,6 +26,7 @@ const secretsManager = new SecretsManagerClient();
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
