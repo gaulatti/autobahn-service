@@ -422,11 +422,8 @@ export class PlaylistsService {
             pulse.id,
           );
 
-          /**
-           * Update the heartbeat record with the output data.
-           */
-          await heartbeat.update({
-            pulseId: pulse.id,
+          this.heartbeatsService.addCwvMetrics({
+            id: heartbeat.id,
             ttfb: item.simplifiedResult.timings.TTFB,
             si: item.simplifiedResult.timings.SI,
             cls: item.simplifiedResult.timings.CLS,
@@ -435,10 +432,21 @@ export class PlaylistsService {
             lcp: item.simplifiedResult.timings.LCP,
             tbt: item.simplifiedResult.timings.TBT,
             tti: item.simplifiedResult.timings.TTI,
-            performanceScore: item.simplifiedResult.performance,
-            accessibilityScore: item.simplifiedResult.accessibilityScore,
-            bestPracticesScore: item.simplifiedResult.bestPracticesScore,
-            seoScore: item.simplifiedResult.seoScore,
+          });
+
+          await this.heartbeatsService.addLighthouseScores({
+            id: heartbeat.id,
+            performance: item.simplifiedResult.performance,
+            accessibility: item.simplifiedResult.accessibilityScore,
+            bestPractices: item.simplifiedResult.bestPracticesScore,
+            seo: item.simplifiedResult.seoScore,
+          });
+
+          /**
+           * Update the heartbeat record with the output data.
+           */
+          await heartbeat.update({
+            pulseId: pulse.id,
             status: 4,
           });
         }

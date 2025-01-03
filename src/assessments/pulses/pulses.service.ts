@@ -6,7 +6,9 @@ import { Op } from 'sequelize';
 import { UsersService } from 'src/authorization/users/users.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
 import { Logger } from 'src/logger/logger.decorator';
+import { CwvMetric } from 'src/models/cwv.metric.model';
 import { Heartbeat } from 'src/models/heartbeat.model';
+import { LighthouseScore } from 'src/models/lighthouse.score.model';
 import { Pulse } from 'src/models/pulse.model';
 import { Target } from 'src/models/target.model';
 import { Url } from 'src/models/url.model';
@@ -70,7 +72,11 @@ export class PulsesService {
         },
       },
       include: [
-        { model: Heartbeat, as: 'heartbeats' },
+        {
+          model: Heartbeat,
+          as: 'heartbeats',
+          include: [CwvMetric, LighthouseScore],
+        },
         { model: Url, as: 'url' },
         Target,
       ],
@@ -108,7 +114,11 @@ export class PulsesService {
         },
       },
       include: [
-        { model: Heartbeat, as: 'heartbeats' },
+        {
+          model: Heartbeat,
+          as: 'heartbeats',
+          include: [CwvMetric, LighthouseScore],
+        },
         { model: Url, as: 'url' },
       ],
       distinct: true,
@@ -137,7 +147,11 @@ export class PulsesService {
       ...paginationParams,
       order: getSortParams(sort),
       include: [
-        { model: Heartbeat, as: 'heartbeats' },
+        {
+          model: Heartbeat,
+          as: 'heartbeats',
+          include: [CwvMetric, LighthouseScore],
+        },
         { model: Url, as: 'url' },
         Target,
       ],
@@ -166,7 +180,15 @@ export class PulsesService {
   getPulse(slug: string): Promise<Pulse> {
     return this.pulse.findOne({
       where: { slug },
-      include: [{ model: Heartbeat }, { model: Url }, { model: Target }],
+      include: [
+        {
+          model: Heartbeat,
+          as: 'heartbeats',
+          include: [CwvMetric, LighthouseScore],
+        },
+        { model: Url },
+        { model: Target },
+      ],
     });
   }
 

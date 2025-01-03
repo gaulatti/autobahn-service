@@ -3,7 +3,9 @@ import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { CwvMetric } from 'src/models/cwv.metric.model';
 import { Heartbeat } from 'src/models/heartbeat.model';
+import { LighthouseScore } from 'src/models/lighthouse.score.model';
 import { streamToString } from 'src/utils/s3';
 import { Readable } from 'stream';
 import { PulsesService } from '../pulses/pulses.service';
@@ -33,6 +35,9 @@ export class HeartbeatsService {
     @Inject(forwardRef(() => PulsesService))
     private readonly pulsesService: PulsesService,
     @InjectModel(Heartbeat) private readonly heartbeat: typeof Heartbeat,
+    @InjectModel(CwvMetric) private readonly cwvMetric: typeof CwvMetric,
+    @InjectModel(LighthouseScore)
+    private readonly lighthouseScore: typeof LighthouseScore,
   ) {}
 
   /**
@@ -181,6 +186,72 @@ export class HeartbeatsService {
       pulseId: id,
       mode: isMobile ? 0 : 1,
       status: 0,
+    });
+  }
+
+  /**
+   * Adds Core Web Vitals (CWV) metrics to the database.
+   *
+   * @param input - An object containing the following properties:
+   * @param input.id - The ID of the heartbeat.
+   * @param input.ttfb - Time to First Byte (TTFB) metric.
+   * @param input.si - Speed Index (SI) metric.
+   * @param input.cls - Cumulative Layout Shift (CLS) metric.
+   * @param input.dcl - DOM Content Loaded (DCL) metric.
+   * @param input.fcp - First Contentful Paint (FCP) metric.
+   * @param input.lcp - Largest Contentful Paint (LCP) metric.
+   * @param input.tbt - Total Blocking Time (TBT) metric.
+   * @param input.tti - Time to Interactive (TTI) metric.
+   * @returns A promise that resolves to the created CWV metric record.
+   */
+  async addCwvMetrics(input: {
+    id: number;
+    ttfb: number;
+    si: number;
+    cls: number;
+    dcl: number;
+    fcp: number;
+    lcp: number;
+    tbt: number;
+    tti: number;
+  }) {
+    return await this.cwvMetric.create({
+      heartbeatId: input.id,
+      ttfb: input.ttfb,
+      si: input.si,
+      cls: input.cls,
+      dcl: input.dcl,
+      fcp: input.fcp,
+      lcp: input.lcp,
+      tbt: input.tbt,
+      tti: input.tti,
+    });
+  }
+
+  /**
+   * Adds Lighthouse scores to the database for a given heartbeat.
+   *
+   * @param input - An object containing the Lighthouse scores and the heartbeat ID.
+   * @param input.id - The ID of the heartbeat.
+   * @param input.performance - The performance score.
+   * @param input.accessibility - The accessibility score.
+   * @param input.bestPractices - The best practices score.
+   * @param input.seo - The SEO score.
+   * @returns A promise that resolves to the created Lighthouse score record.
+   */
+  async addLighthouseScores(input: {
+    id: number;
+    performance: number;
+    accessibility: number;
+    bestPractices: number;
+    seo: number;
+  }) {
+    return await this.lighthouseScore.create({
+      heartbeatId: input.id,
+      performanceScore: input.performance,
+      accessibilityScore: input.accessibility,
+      bestPracticesScore: input.bestPractices,
+      seoScore: input.seo,
     });
   }
 }

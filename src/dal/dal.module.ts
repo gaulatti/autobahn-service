@@ -2,8 +2,10 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Assignment } from 'src/models/assignment.model';
 import { Baseline } from 'src/models/baseline.model';
+import { CwvMetric } from 'src/models/cwv.metric.model';
 import { Engagement } from 'src/models/engagement.model';
 import { Heartbeat } from 'src/models/heartbeat.model';
+import { LighthouseScore } from 'src/models/lighthouse.score.model';
 import { Membership } from 'src/models/membership.model';
 import { Playlist } from 'src/models/playlist.model';
 import { Plugin } from 'src/models/plugin.model';
@@ -29,6 +31,8 @@ import { User } from 'src/models/user.model';
       User,
       Assignment,
       Pulse,
+      CwvMetric,
+      LighthouseScore,
       Schedule,
       Target,
       Url,
