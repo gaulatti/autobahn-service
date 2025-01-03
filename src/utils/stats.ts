@@ -1,3 +1,4 @@
+import { Pulse } from 'src/models/pulse.model';
 import { mean, percentile } from 'stats-lite';
 
 /**
@@ -101,7 +102,7 @@ const calculateVariation = (scores: number[]): number => {
  * @param metric - The metric to calculate the scores for.
  * @returns An array of ScoreEntry objects representing the calculated scores.
  */
-const calculateScores = (data: any[]): ScoreEntry[] => {
+const calculateScores = (data: Pulse[]): ScoreEntry[] => {
   /**
    * Create an object to store the mobile scores
    */
@@ -126,18 +127,21 @@ const calculateScores = (data: any[]): ScoreEntry[] => {
    * Iterate over the pulses and heartbeats to collect the scores
    */
   data.forEach((pulse) => {
-    pulse.heartbeats.forEach((heartbeat: any) => {
+    pulse.heartbeats.forEach((heartbeat) => {
       const scores = heartbeat.mode === 0 ? mobileScores : desktopScores;
-      if (heartbeat.performanceScore)
-        scores.performance.push(heartbeat.performanceScore);
 
-      if (heartbeat.accessibilityScore)
-        scores.accessibility.push(heartbeat.accessibilityScore);
+      heartbeat.lighthouseScores.forEach((score) => {
+        if (score.performanceScore)
+          scores.performance.push(score.performanceScore);
 
-      if (heartbeat.bestPracticesScore)
-        scores.bestPractices.push(heartbeat.bestPracticesScore);
+        if (score.accessibilityScore)
+          scores.accessibility.push(score.accessibilityScore);
 
-      if (heartbeat.seoScore) scores.seo.push(heartbeat.seoScore);
+        if (score.bestPracticesScore)
+          scores.bestPractices.push(score.bestPracticesScore);
+
+        if (score.seoScore) scores.seo.push(score.seoScore);
+      });
     });
   });
 
@@ -236,7 +240,7 @@ const createStatsDetails = (
  * @param data - An array of data containing pulses and heartbeats.
  * @returns An array of CWVStatsEntry objects representing the calculated CWV stats.
  */
-const calculateCWVStats = (data: any[]): CWVStatsEntry[] => {
+const calculateCWVStats = (data: Pulse[]): CWVStatsEntry[] => {
   const mobileMetrics = {
     ttfb: [] as { timestamp: string; value: number; slug: string }[],
     fcp: [] as { timestamp: string; value: number; slug: string }[],
@@ -263,49 +267,51 @@ const calculateCWVStats = (data: any[]): CWVStatsEntry[] => {
    * Iterate over the pulses and heartbeats to collect the metrics
    */
   data.forEach((pulse) => {
-    pulse.heartbeats.forEach((heartbeat: any) => {
+    pulse.heartbeats.forEach((heartbeat) => {
       const metrics = heartbeat.mode === 0 ? mobileMetrics : desktopMetrics;
-      const timestamp = pulse.createdAt;
+      const timestamp = pulse.createdAt.toISOString();
 
-      metrics.ttfb.push({
-        timestamp,
-        value: parseFloat(heartbeat.ttfb),
-        slug: pulse.slug,
-      });
-      metrics.fcp.push({
-        timestamp,
-        value: parseFloat(heartbeat.fcp),
-        slug: pulse.slug,
-      });
-      metrics.dcl.push({
-        timestamp,
-        value: parseFloat(heartbeat.dcl),
-        slug: pulse.slug,
-      });
-      metrics.si.push({
-        timestamp,
-        value: parseFloat(heartbeat.si),
-        slug: pulse.slug,
-      });
-      metrics.lcp.push({
-        timestamp,
-        value: parseFloat(heartbeat.lcp),
-        slug: pulse.slug,
-      });
-      metrics.tti.push({
-        timestamp,
-        value: parseFloat(heartbeat.tti),
-        slug: pulse.slug,
-      });
-      metrics.cls.push({
-        timestamp,
-        value: parseFloat(heartbeat.cls),
-        slug: pulse.slug,
-      });
-      metrics.tbt.push({
-        timestamp,
-        value: parseFloat(heartbeat.tbt),
-        slug: pulse.slug,
+      heartbeat.cwvMetrics.forEach((metric) => {
+        metrics.ttfb.push({
+          timestamp,
+          value: metric.ttfb,
+          slug: pulse.slug,
+        });
+        metrics.fcp.push({
+          timestamp,
+          value: metric.fcp,
+          slug: pulse.slug,
+        });
+        metrics.dcl.push({
+          timestamp,
+          value: metric.dcl,
+          slug: pulse.slug,
+        });
+        metrics.si.push({
+          timestamp,
+          value: metric.si,
+          slug: pulse.slug,
+        });
+        metrics.lcp.push({
+          timestamp,
+          value: metric.lcp,
+          slug: pulse.slug,
+        });
+        metrics.tti.push({
+          timestamp,
+          value: metric.tti,
+          slug: pulse.slug,
+        });
+        metrics.cls.push({
+          timestamp,
+          value: metric.cls,
+          slug: pulse.slug,
+        });
+        metrics.tbt.push({
+          timestamp,
+          value: metric.tbt,
+          slug: pulse.slug,
+        });
       });
     });
   });
