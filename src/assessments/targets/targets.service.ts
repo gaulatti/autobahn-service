@@ -60,15 +60,7 @@ export class TargetsService {
   async updateTarget(slug: string, dto: TargetsDto) {
     const { stage, name } = dto;
 
-    /**
-     * Fetch the URL record by the fully qualified domain name (FQDN)
-     */
-    const url = await this.urlsService.urlByFQDN(dto.target);
-
-    await this.target.update(
-      { stage, name, urlId: url.id },
-      { where: { slug } },
-    );
+    await this.target.update({ stage, name }, { where: { slug } });
 
     return this.getTarget(slug);
   }
@@ -83,14 +75,9 @@ export class TargetsService {
     const { stage, name } = dto;
 
     /**
-     * Fetch the URL record by the fully qualified domain name (FQDN)
-     */
-    const url = await this.urlsService.urlByFQDN(dto.target);
-
-    /**
      * Create the target record
      */
-    return this.target.create({ stage, name, urlId: url.id, provider: 1 });
+    return this.target.create({ stage, name, provider: 1 });
   }
 
   /**

@@ -1,6 +1,7 @@
 import {
   AllowNull,
   AutoIncrement,
+  BelongsToMany,
   Column,
   CreatedAt,
   DataType,
@@ -13,6 +14,7 @@ import {
 import { Engagement } from './engagement.model';
 import { Pulse } from './pulse.model';
 import { Target } from './target.model';
+import { TargetUrl } from './target.url.model';
 
 @Table({
   tableName: 'urls',
@@ -42,7 +44,7 @@ export class Url extends Model<Url> {
   updatedAt!: Date;
 
   // Associations
-  @HasMany(() => Target)
+  @BelongsToMany(() => Target, () => TargetUrl)
   targets!: Target[];
 
   @HasMany(() => Engagement)

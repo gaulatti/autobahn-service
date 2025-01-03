@@ -14,6 +14,7 @@ import { Slot } from 'src/models/slot.model';
 import { Statistic } from 'src/models/statistic.model';
 import { Strategy } from 'src/models/strategy.model';
 import { Target } from 'src/models/target.model';
+import { TargetUrl } from 'src/models/target.url.model';
 import { Team } from 'src/models/team.model';
 import { Trigger } from 'src/models/trigger.model';
 import { Url } from 'src/models/url.model';
@@ -31,6 +32,7 @@ import { User } from 'src/models/user.model';
       Schedule,
       Target,
       Url,
+      TargetUrl,
       Heartbeat,
       Baseline,
       Statistic,

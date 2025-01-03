@@ -1,12 +1,11 @@
 import {
   AllowNull,
   AutoIncrement,
-  BelongsTo,
+  BelongsToMany,
   Column,
   CreatedAt,
   DataType,
   DeletedAt,
-  ForeignKey,
   HasMany,
   Model,
   PrimaryKey,
@@ -17,6 +16,7 @@ import { Baseline } from './baseline.model';
 import { Pulse } from './pulse.model';
 import { Schedule } from './schedule.model';
 import { Statistic } from './statistic.model';
+import { TargetUrl } from './target.url.model';
 import { Url } from './url.model';
 
 @Table({
@@ -38,11 +38,6 @@ export class Target extends Model<Target> {
   @AllowNull(false)
   @Column(DataType.INTEGER)
   provider!: number;
-
-  @ForeignKey(() => Url)
-  @AllowNull(true)
-  @Column({ field: 'url_id', type: DataType.INTEGER })
-  urlId?: number;
 
   @AllowNull(false)
   @Column(DataType.STRING(255))
@@ -69,8 +64,8 @@ export class Target extends Model<Target> {
   deletedAt?: Date;
 
   // Associations
-  @BelongsTo(() => Url)
-  url?: Url;
+  @BelongsToMany(() => Url, () => TargetUrl)
+  urls!: Url[];
 
   @HasMany(() => Baseline)
   baselines!: Baseline[];
