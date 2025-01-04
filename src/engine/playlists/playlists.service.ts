@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/sequelize';
+import { nanoid } from 'nanoid';
 import { HeartbeatsService } from 'src/assessments/heartbeats/heartbeats.service';
 import { PulsesService } from 'src/assessments/pulses/pulses.service';
 import { UrlsService } from 'src/assessments/urls/urls.service';
@@ -115,6 +116,7 @@ export class PlaylistsService {
      */
     const manifest = {
       context,
+      fqdn: process.env.AUTOBAHN_FQDN,
       sequence: [
         /**
          * Organize slots based on plugin type and order.
@@ -137,6 +139,7 @@ export class PlaylistsService {
       strategiesId: strategy.id,
       manifest,
       status: 'CREATED',
+      slug: nanoid(),
       nextStep: manifest.sequence[0]?.plugin.arn,
     });
 

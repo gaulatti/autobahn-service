@@ -46,6 +46,10 @@ export class Playlist extends Model<Playlist> {
   strategiesId!: number;
 
   @AllowNull(false)
+  @Column(DataType.TEXT)
+  slug!: string;
+
+  @AllowNull(false)
   @Column({
     type: DataType.JSON,
     get() {
