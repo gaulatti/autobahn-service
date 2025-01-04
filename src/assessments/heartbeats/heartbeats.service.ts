@@ -49,9 +49,9 @@ export class HeartbeatsService {
    *
    * @throws Will throw an error if the heartbeat data cannot be retrieved.
    */
-  async getHeartbeat(slug: string, isMobile: boolean): Promise<string> {
+  async getHeartbeat(pulseKey: string, isMobile: boolean): Promise<string> {
     const bucketName = process.env.BUCKET_NAME;
-    const key = `${slug}.${isMobile ? 'mobile' : 'desktop'}.json`;
+    const key = `${pulseKey}.${isMobile ? 'mobile' : 'desktop'}.json`;
 
     const command = new GetObjectCommand({
       Bucket: bucketName,
@@ -71,12 +71,12 @@ export class HeartbeatsService {
    * @returns A promise that resolves to an object containing the signed URL.
    */
   async getHeartbeatJSON(
-    slug: string,
+    pulseKey: string,
     isMobile: boolean,
     minified = false,
   ): Promise<Record<string, unknown>> {
     const bucketName = process.env.BUCKET_NAME;
-    const key = `${slug}.${isMobile ? 'mobile' : 'desktop'}${minified ? '.min' : ''}.json`;
+    const key = `${pulseKey}.${isMobile ? 'mobile' : 'desktop'}${minified ? '.min' : ''}.json`;
 
     const command = new GetObjectCommand({
       Bucket: bucketName,

@@ -44,7 +44,10 @@ export class HeartbeatsController {
     const isMobile = request.url.includes('mobile');
     return {
       target: pulse.target,
-      json: await this.heartbeatsService.getHeartbeat(slug, isMobile),
+      json: await this.heartbeatsService.getHeartbeat(
+        pulse.playlistId ? pulse.id.toString() : slug,
+        isMobile,
+      ),
     };
   }
 
@@ -57,13 +60,18 @@ export class HeartbeatsController {
    * @returns The heartbeat JSON data.
    */
   @Get(['desktop/json', 'mobile/json'])
-  getHeartbeatJSON(
+  async getHeartbeatJSON(
     @Request() request: Request,
     @Param('slug') slug: string,
     @Query('minified') minified: boolean = false,
   ) {
+    const pulse = await this.pulsesService.getPulse(slug);
     const isMobile = request.url.includes('mobile');
-    return this.heartbeatsService.getHeartbeatJSON(slug, isMobile, minified);
+    return this.heartbeatsService.getHeartbeatJSON(
+      pulse.playlistId ? pulse.id.toString() : slug,
+      isMobile,
+      minified,
+    );
   }
 
   @Patch(['desktop/retry', 'mobile/retry'])

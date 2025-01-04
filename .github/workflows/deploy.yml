@@ -68,6 +68,7 @@ jobs:
             -e COGNITO_USER_POOL_ID=${{ secrets.COGNITO_USER_POOL_ID }} \
             -e ALLOWED_TOPICS="${{ secrets.ALLOWED_TOPICS }}" \
             -e DB_CREDENTIALS="${{ secrets.DB_CREDENTIALS }}" \
+            -e BUCKET_NAME="${{ secrets.BUCKET_NAME }}" \
             -e CONTAINERIZED=true \
             --restart=always \
             --log-driver=awslogs \
