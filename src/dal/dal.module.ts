@@ -21,6 +21,7 @@ import { Team } from 'src/models/team.model';
 import { Trigger } from 'src/models/trigger.model';
 import { Url } from 'src/models/url.model';
 import { User } from 'src/models/user.model';
+import { BackupService } from './backup/backup.service';
 
 @Module({
   imports: [
@@ -49,6 +50,6 @@ import { User } from 'src/models/user.model';
     ]),
   ],
   exports: [SequelizeModule],
-  providers: [],
+  providers: [BackupService],
 })
 export class DalModule {}
