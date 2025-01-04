@@ -64,8 +64,9 @@ export class MetricsInterceptor implements NestInterceptor {
          * Send a metric for the specific status code.
          */
         this.cloudWatchService.sendMetric(`StatusCode-${statusCode}`, 1, {
+          Controller: controllerName || 'UnknownController',
           Method: method,
-          Endpoint: endpoint,
+          Endpoint: endpoint || 'UnknownEndpoint',
         });
 
         throw err;
