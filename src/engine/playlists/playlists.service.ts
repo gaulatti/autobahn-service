@@ -440,9 +440,9 @@ export class PlaylistsService {
           await this.heartbeatsService.addLighthouseScores({
             id: heartbeat.id,
             performance: item.simplifiedResult.performance,
-            accessibility: item.simplifiedResult.accessibilityScore,
-            bestPractices: item.simplifiedResult.bestPracticesScore,
-            seo: item.simplifiedResult.seoScore,
+            accessibility: item.simplifiedResult.accessibility,
+            bestPractices: item.simplifiedResult.bestPractices,
+            seo: item.simplifiedResult.seo,
           });
 
           /**
