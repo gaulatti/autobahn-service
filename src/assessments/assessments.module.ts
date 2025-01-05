@@ -10,8 +10,6 @@ import { ProjectsController } from './projects/projects.controller';
 import { ProjectsService } from './projects/projects.service';
 import { PulsesController } from './pulses/pulses.controller';
 import { PulsesService } from './pulses/pulses.service';
-import { SchedulesController } from './schedules/schedules.controller';
-import { SchedulesService } from './schedules/schedules.service';
 import { TargetsController } from './targets/targets.controller';
 import { TargetsService } from './targets/targets.service';
 import { UrlsController } from './urls/urls.controller';
@@ -25,7 +23,6 @@ import { UrlsService } from './urls/urls.service';
     UrlsController,
     TargetsController,
     HeartbeatsController,
-    SchedulesController,
     BaselinesController,
   ],
   providers: [
@@ -34,7 +31,6 @@ import { UrlsService } from './urls/urls.service';
     UrlsService,
     TargetsService,
     HeartbeatsService,
-    SchedulesService,
     BaselinesService,
   ],
   exports: [UrlsService, PulsesService, HeartbeatsService],

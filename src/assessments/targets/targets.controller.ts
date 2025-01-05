@@ -9,7 +9,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { PulsesService } from '../pulses/pulses.service';
-import { SchedulesService } from '../schedules/schedules.service';
 import { UrlsService } from '../urls/urls.service';
 import { TargetsDto } from './targets.dto';
 import { TargetsService } from './targets.service';
@@ -20,7 +19,6 @@ export class TargetsController {
     private readonly targetsService: TargetsService,
     private readonly pulsesService: PulsesService,
     private readonly urlsService: UrlsService,
-    private readonly schedulesService: SchedulesService,
   ) {}
 
   @Get()
@@ -102,11 +100,6 @@ export class TargetsController {
     );
 
     return { target, ...stats };
-  }
-
-  @Get(':slug/schedules')
-  async schedules(@Param('slug') slug: string) {
-    return this.schedulesService.schedulesByTarget(slug);
   }
 
   @Get(':slug/urls')

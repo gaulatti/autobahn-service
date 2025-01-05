@@ -14,7 +14,6 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript';
 import { Assignment } from './assignment.model';
-import { Schedule } from './schedule.model';
 import { Team } from './team.model';
 
 @Table({
@@ -60,7 +59,4 @@ export class Project extends Model<Project> {
 
   @HasMany(() => Assignment)
   assignments!: Assignment[];
-
-  @HasMany(() => Schedule)
-  schedules!: Schedule[];
 }

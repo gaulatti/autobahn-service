@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Project } from 'src/models/project.model';
-import { Schedule } from 'src/models/schedule.model';
 import { ProjectDto } from './project.dto';
-import { Target } from 'src/models/target.model';
 
 @Injectable()
 export class ProjectsService {
@@ -19,7 +17,6 @@ export class ProjectsService {
   async getProject(slug: string): Promise<Project> {
     return this.project.findOne({
       where: { slug },
-      include: [{ model: Schedule, include: [{ model: Target }] }],
     });
   }
 

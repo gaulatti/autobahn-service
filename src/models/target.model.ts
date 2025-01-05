@@ -14,8 +14,6 @@ import {
 } from 'sequelize-typescript';
 import { Baseline } from './baseline.model';
 import { Pulse } from './pulse.model';
-import { Schedule } from './schedule.model';
-import { Statistic } from './statistic.model';
 import { TargetUrl } from './target.url.model';
 import { Url } from './url.model';
 
@@ -70,12 +68,6 @@ export class Target extends Model<Target> {
   @HasMany(() => Baseline)
   baselines!: Baseline[];
 
-  @HasMany(() => Schedule)
-  schedules!: Schedule[];
-
   @HasMany(() => Pulse)
   pulses!: Pulse[];
-
-  @HasMany(() => Statistic)
-  statistics!: Statistic[];
 }

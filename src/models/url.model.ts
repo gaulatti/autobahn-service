@@ -11,7 +11,6 @@ import {
   Table,
   UpdatedAt,
 } from 'sequelize-typescript';
-import { Engagement } from './engagement.model';
 import { Pulse } from './pulse.model';
 import { Target } from './target.model';
 import { TargetUrl } from './target.url.model';
@@ -46,9 +45,6 @@ export class Url extends Model<Url> {
   // Associations
   @BelongsToMany(() => Target, () => TargetUrl)
   targets!: Target[];
-
-  @HasMany(() => Engagement)
-  engagements!: Engagement[];
 
   @HasMany(() => Pulse)
   pulses!: Pulse[];
