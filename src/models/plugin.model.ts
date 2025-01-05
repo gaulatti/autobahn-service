@@ -44,6 +44,10 @@ export class Plugin extends Model<Plugin> {
   pluginKey!: string;
 
   @AllowNull(false)
+  @Column(DataType.TEXT)
+  slug!: string;
+
+  @AllowNull(false)
   @Column(
     DataType.ENUM('TRIGGER', 'PROVIDER', 'SOURCE', 'PROCESSING', 'DELIVERY'),
   )

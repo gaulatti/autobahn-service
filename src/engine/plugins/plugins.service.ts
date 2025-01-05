@@ -32,6 +32,25 @@ export class PluginsService {
   private readonly logger!: JSONLogger;
 
   /**
+   * Retrieves all playlists.
+   *
+   * @returns {Promise<Playlist[]>} A promise that resolves to an array of playlists.
+   */
+  async getPlugins(): Promise<Plugin[]> {
+    return this.plugin.findAll();
+  }
+
+  /**
+   * Retrieves a plugin by its slug.
+   *
+   * @param slug - The unique identifier for the plugin.
+   * @returns A promise that resolves to the plugin object if found, or null if not found.
+   */
+  async getPlugin(slug: string) {
+    return this.plugin.findOne({ where: { slug } });
+  }
+
+  /**
    * Processes the next plugin in the playlist sequence.
    *
    * @param playlist - The playlist object containing the sequence of plugins to be executed.

@@ -19,6 +19,25 @@ export class StrategiesService {
   ) {}
 
   /**
+   * Retrieves all strategies.
+   *
+   * @returns {Promise<Strategy[]>} A promise that resolves to an array of strategies.
+   */
+  async getStrategies(): Promise<Strategy[]> {
+    return this.strategy.findAll();
+  }
+
+  /**
+   * Retrieves a strategy by its slug.
+   *
+   * @param slug - The unique identifier for the strategy.
+   * @returns A promise that resolves to the strategy object if found, or null if not found.
+   */
+  async getStrategy(slug: string) {
+    return this.strategy.findOne({ where: { slug } });
+  }
+
+  /**
    * Finds a strategy by its ID.
    *
    * @param id - The ID of the strategy to find.

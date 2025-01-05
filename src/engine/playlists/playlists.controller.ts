@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import axios from 'axios';
 import { Logger } from 'src/logger/logger.decorator';
 import { JSONLogger } from 'src/utils/logger';
@@ -75,6 +75,16 @@ export class PlaylistsController {
       const message = JSON.parse(parsedBody['Message']);
       await this.playlistService.segue(message);
     }
+  }
+
+  @Get()
+  async getPlaylists() {
+    return this.playlistService.getPlaylists();
+  }
+
+  @Get(':slug')
+  async getPlaylist(@Param('slug') slug: string) {
+    return this.playlistService.getPlaylist(slug);
   }
 
   /**

@@ -44,6 +44,10 @@ export class Strategy extends Model<Strategy> {
   slots!: Slot[];
 
   @AllowNull(false)
+  @Column(DataType.TEXT)
+  slug!: string;
+
+  @AllowNull(false)
   @Column(DataType.ENUM('PR', 'CERT', 'QA', 'CMS', 'STAGE', 'PROD'))
   stage!: 'PR' | 'CERT' | 'QA' | 'CMS' | 'STAGE' | 'PROD';
 

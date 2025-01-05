@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { nanoid } from 'nanoid';
 import { HeartbeatsService } from 'src/assessments/heartbeats/heartbeats.service';
 import { PulsesService } from 'src/assessments/pulses/pulses.service';
-import { UrlsService } from 'src/assessments/urls/urls.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
 import { Logger } from 'src/logger/logger.decorator';
 import { Playlist } from 'src/models/playlist.model';
@@ -49,12 +48,30 @@ export class PlaylistsService {
     private readonly triggersService: TriggersService,
     private readonly pulsesService: PulsesService,
     private readonly heartbeatsService: HeartbeatsService,
-    private readonly urlService: UrlsService,
     private readonly notificationsService: NotificationsService,
     private readonly strategiesService: StrategiesService,
     @InjectModel(Playlist) private readonly playlist: typeof Playlist,
     @InjectModel(Pulse) private readonly pulse: typeof Pulse,
   ) {}
+
+  /**
+   * Retrieves all playlists.
+   *
+   * @returns {Promise<Playlist[]>} A promise that resolves to an array of playlists.
+   */
+  async getPlaylists(): Promise<Playlist[]> {
+    return this.playlist.findAll();
+  }
+
+  /**
+   * Retrieves a playlist by its slug.
+   *
+   * @param slug - The unique identifier for the playlist.
+   * @returns A promise that resolves to the playlist object if found, or null if not found.
+   */
+  async getPlaylist(slug: string) {
+    return this.playlist.findOne({ where: { slug } });
+  }
 
   /**
    * Monitors and processes scheduled triggers.
