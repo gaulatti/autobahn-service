@@ -1,13 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { Op, Sequelize } from 'sequelize';
+import { Logger } from 'src/logger/logger.decorator';
 import { Plugin } from 'src/models/plugin.model';
 import { Slot } from 'src/models/slot.model';
 import { Strategy } from 'src/models/strategy.model';
 import { ScheduleContext, Trigger } from 'src/models/trigger.model';
 import { getNextExecution } from 'src/utils/cron';
+import { JSONLogger } from 'src/utils/logger';
 
 @Injectable()
 export class TriggersService {
+  /**
+   * Logger instance for logging messages.
+   */
+  @Logger(TriggersService.name)
+  private readonly logger!: JSONLogger;
+
   /**
    * Retrieves all triggers of type 'SCHEDULE' from the database.
    *
@@ -23,7 +31,7 @@ export class TriggersService {
       });
       return scheduledTriggers;
     } catch (error) {
-      console.error('Error fetching scheduled triggers:', error);
+      this.logger.error('Error fetching scheduled triggers:', error);
       throw error;
     }
   }
@@ -58,7 +66,7 @@ export class TriggersService {
 
       return triggers;
     } catch (error) {
-      console.error(
+      this.logger.error(
         'Error fetching scheduled triggers on or before the current time:',
         error,
       );

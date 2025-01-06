@@ -1,5 +1,7 @@
 import { Injectable, MessageEvent } from '@nestjs/common';
 import { Observable, Subject, filter, map } from 'rxjs';
+import { Logger } from 'src/logger/logger.decorator';
+import { JSONLogger } from 'src/utils/logger';
 import { CommonNotifications } from './common.notifications';
 import { INotificationsService } from './notifications.service.interface';
 /**
@@ -36,6 +38,12 @@ export class NotificationsService
   implements INotificationsService
 {
   /**
+   * Logger instance for logging messages.
+   */
+  @Logger(NotificationsService.name)
+  private readonly logger!: JSONLogger;
+
+  /**
    * The clients that are connected to the notification service.
    */
   private clients: Record<string, NotificationClient> = {};
@@ -63,7 +71,7 @@ export class NotificationsService
 
     this.clients[clientId] = { id: clientId };
 
-    console.log(`Client connected: ${clientId}`);
+    this.logger.log(`Client connected: ${clientId}`);
     return observable;
   }
 
@@ -71,16 +79,16 @@ export class NotificationsService
     if (this.clients[clientId]) {
       this.globalSubject.next({ clientId, message: { data: message } });
     } else {
-      console.error(`Client ${clientId} not found`);
+      this.logger.error(`Client ${clientId} not found`);
     }
   }
 
   disconnect(clientId: string) {
     if (this.clients[clientId]) {
       delete this.clients[clientId];
-      console.log('Client Disconnected', clientId);
+      this.logger.log('Client Disconnected', clientId);
     } else {
-      console.log('Client Not Found for Disconnection', clientId);
+      this.logger.log('Client Not Found for Disconnection', clientId);
     }
   }
 
