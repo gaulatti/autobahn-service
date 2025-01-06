@@ -51,20 +51,17 @@ export class BackupService {
   @Cron('0 0 * * *')
   async backupDatabase(): Promise<void> {
     try {
-      if (
-        process.env.DB_HOST === 'localhost' ||
-        process.env.DB_DATABASE !== 'autobahn'
-      ) {
+      const { host, port, username, password, database } =
+        await this.getDatabaseCredentials();
+
+      if (host === 'localhost' || database !== 'autobahn') {
         this.logger.error(
-          'Database backup is not supported when using a local database.',
+          `Database backup is not supported when using a local database. (${JSON.stringify({ host, database })})`,
         );
 
         return;
       }
-
-      const { host, port, username, password, database } =
-        await this.getDatabaseCredentials();
-      const sqlFilePath = `/tmp/backup-${process.env.DB_DATABASE.toLowerCase()}-${new Date().toISOString()}.sql`;
+      const sqlFilePath = `/tmp/backup-${database.toLowerCase()}-${new Date().toISOString()}.sql`;
 
       await execPromise(
         `mysqldump -h ${host} -P ${port} -u ${username} -p${password} ${database} > ${sqlFilePath}`,
