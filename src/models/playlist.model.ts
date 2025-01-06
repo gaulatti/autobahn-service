@@ -2,11 +2,14 @@ import {
   AllowNull,
   AutoIncrement,
   Column,
+  CreatedAt,
   DataType,
+  DeletedAt,
   ForeignKey,
   Model,
   PrimaryKey,
   Table,
+  UpdatedAt,
 } from 'sequelize-typescript';
 import { Membership } from './membership.model';
 import { Slot } from './slot.model';
@@ -78,4 +81,16 @@ export class Playlist extends Model<Playlist> {
   @AllowNull(true)
   @Column(DataType.STRING)
   nextStep!: string | null;
+
+  @CreatedAt
+  @Column({ field: 'created_at' })
+  createdAt!: Date;
+
+  @UpdatedAt
+  @Column({ field: 'updated_at' })
+  updatedAt!: Date;
+
+  @DeletedAt
+  @Column({ field: 'deleted_at' })
+  deletedAt?: Date;
 }

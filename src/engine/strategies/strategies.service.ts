@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Plugin } from 'src/models/plugin.model';
 import { Slot } from 'src/models/slot.model';
 import { Strategy } from 'src/models/strategy.model';
+import { getPaginationParams, getSortParams } from 'src/utils/lists';
 
 @Injectable()
 /**
@@ -23,8 +24,18 @@ export class StrategiesService {
    *
    * @returns {Promise<Strategy[]>} A promise that resolves to an array of strategies.
    */
-  async getStrategies(): Promise<Strategy[]> {
-    return this.strategy.findAll();
+  async getStrategies(
+    sort: string,
+    startRow?: number,
+    endRow?: number,
+  ): Promise<{ rows: Strategy[]; count: number }> {
+    const paginationParams = getPaginationParams(startRow, endRow);
+
+    return this.strategy.findAndCountAll({
+      ...paginationParams,
+      order: getSortParams(sort),
+      distinct: true,
+    });
   }
 
   /**

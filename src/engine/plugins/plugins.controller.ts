@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { Logger } from 'src/logger/logger.decorator';
 import { JSONLogger } from 'src/utils/logger';
 import { PluginsService } from './plugins.service';
@@ -14,8 +14,12 @@ export class PluginsController {
   private readonly logger!: JSONLogger;
 
   @Get()
-  async getPlugins() {
-    return this.pluginsService.getPlugins();
+  async getPlugins(
+    @Query('sort') sort: string,
+    @Query('startRow') startRow: number,
+    @Query('endRow') endRow: number,
+  ) {
+    return this.pluginsService.getPlugins(sort, startRow, endRow);
   }
 
   @Get(':slug')

@@ -2,6 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/sequelize';
 import { nanoid } from 'nanoid';
+import { Op } from 'sequelize';
 import { HeartbeatsService } from 'src/assessments/heartbeats/heartbeats.service';
 import { PulsesService } from 'src/assessments/pulses/pulses.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
@@ -9,6 +10,7 @@ import { Logger } from 'src/logger/logger.decorator';
 import { Playlist } from 'src/models/playlist.model';
 import { Pulse } from 'src/models/pulse.model';
 import { Strategy } from 'src/models/strategy.model';
+import { getPaginationParams, getSortParams } from 'src/utils/lists';
 import { JSONLogger } from 'src/utils/logger';
 import { PluginsService } from '../plugins/plugins.service';
 import { StrategiesService } from '../strategies/strategies.service';
@@ -59,8 +61,25 @@ export class PlaylistsService {
    *
    * @returns {Promise<Playlist[]>} A promise that resolves to an array of playlists.
    */
-  async getPlaylists(): Promise<Playlist[]> {
-    return this.playlist.findAll();
+  async getPlaylists(
+    sort: string,
+    from?: Date,
+    to?: Date,
+    startRow?: number,
+    endRow?: number,
+  ): Promise<{ rows: Playlist[]; count: number }> {
+    const paginationParams = getPaginationParams(startRow, endRow);
+
+    return this.playlist.findAndCountAll({
+      ...paginationParams,
+      order: getSortParams(sort),
+      where: {
+        createdAt: {
+          [Op.between]: [from, to],
+        },
+      },
+      distinct: true,
+    });
   }
 
   /**

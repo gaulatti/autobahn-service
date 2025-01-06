@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { Logger } from 'src/logger/logger.decorator';
 import { JSONLogger } from 'src/utils/logger';
 import { StrategiesService } from './strategies.service';
@@ -14,8 +14,12 @@ export class StrategiesController {
   private readonly logger!: JSONLogger;
 
   @Get()
-  async getStrategies() {
-    return this.strategiesService.getStrategies();
+  async getStrategies(
+    @Query('sort') sort: string,
+    @Query('startRow') startRow: number,
+    @Query('endRow') endRow: number,
+  ) {
+    return this.strategiesService.getStrategies(sort, startRow, endRow);
   }
 
   @Get(':slug')

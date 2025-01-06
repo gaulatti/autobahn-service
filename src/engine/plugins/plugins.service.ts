@@ -5,6 +5,7 @@ import { Logger } from 'src/logger/logger.decorator';
 import { Playlist } from 'src/models/playlist.model';
 import { Plugin } from 'src/models/plugin.model';
 import { Slot } from 'src/models/slot.model';
+import { getPaginationParams, getSortParams } from 'src/utils/lists';
 import { JSONLogger } from 'src/utils/logger';
 import { PlaylistsService } from '../playlists/playlists.service';
 
@@ -34,10 +35,20 @@ export class PluginsService {
   /**
    * Retrieves all playlists.
    *
-   * @returns {Promise<Playlist[]>} A promise that resolves to an array of playlists.
+   * @returns {Promise<Plugin[]>} A promise that resolves to an array of playlists.
    */
-  async getPlugins(): Promise<Plugin[]> {
-    return this.plugin.findAll();
+  async getPlugins(
+    sort: string,
+    startRow?: number,
+    endRow?: number,
+  ): Promise<{ rows: Plugin[]; count: number }> {
+    const paginationParams = getPaginationParams(startRow, endRow);
+
+    return this.plugin.findAndCountAll({
+      ...paginationParams,
+      order: getSortParams(sort),
+      distinct: true,
+    });
   }
 
   /**
