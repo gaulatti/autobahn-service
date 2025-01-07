@@ -1,4 +1,3 @@
-import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { nanoid } from 'nanoid';
@@ -12,18 +11,11 @@ import { LighthouseScore } from 'src/models/lighthouse.score.model';
 import { Pulse } from 'src/models/pulse.model';
 import { Target } from 'src/models/target.model';
 import { Url } from 'src/models/url.model';
-import { User } from 'src/models/user.model';
 import { getPaginationParams, getSortParams } from 'src/utils/lists';
 import { JSONLogger } from 'src/utils/logger';
 import { prependWWW } from 'src/utils/pulses';
 import { UrlsService } from '../urls/urls.service';
 import { PulsesDto } from './pulses.dto';
-
-/**
- * An instance of the AWS Lambda client.
- * This client is used to interact with AWS Lambda services.
- */
-const lambdaClient = new LambdaClient();
 
 @Injectable()
 export class PulsesService {
@@ -229,38 +221,5 @@ export class PulsesService {
     this.notificationsService.refreshPulsesTable();
 
     return pulse;
-  }
-
-  /**
-   * Triggers a new pulse and associated heartbeats, then broadcasts a notification to refresh the pulses table.
-   *
-   * @param dto - Data transfer object containing the necessary information to create a pulse.
-   * @returns An object containing the mobile and desktop heartbeat records.
-   */
-  async triggerPulse({ url }: PulsesDto, { id }: User) {
-    /**
-     * Retrieve the user record by the user ID.
-     */
-    const user = await this.usersService.findUser(id);
-
-    /**
-     * Invoke the adhoc trigger lambda function to create a new pulse.
-     * By now we're using the first team assigned.
-     */
-    const params = {
-      FunctionName: process.env.ADHOC_TRIGGER_LAMBDA_ARN,
-      Payload: JSON.stringify({
-        url,
-        membership_id: user.memberships.find(Boolean).id,
-        isBeta: process.env.IS_BETA == 'true',
-      }),
-    };
-
-    try {
-      const command = new InvokeCommand(params);
-      await lambdaClient.send(command);
-    } catch (error) {
-      this.logger.error('Error invoking lambda:', error);
-    }
   }
 }

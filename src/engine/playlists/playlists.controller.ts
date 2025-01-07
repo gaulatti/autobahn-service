@@ -1,7 +1,17 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Request,
+} from '@nestjs/common';
 import axios from 'axios';
 import { Logger } from 'src/logger/logger.decorator';
+import { User } from 'src/models/user.model';
 import { JSONLogger } from 'src/utils/logger';
+import { PlaylistsDto } from './playlists.dto';
 import { PlaylistsService } from './playlists.service';
 /**
  * Controller for handling playlist-related operations.
@@ -18,6 +28,17 @@ export class PlaylistsController {
    */
   @Logger(PlaylistsController.name)
   private readonly logger!: JSONLogger;
+
+  /**
+   * Creates a new pulse.
+   *
+   * @param dto - The data transfer object containing the details of the pulse to be created.
+   * @returns The created pulse.
+   */
+  @Post('/adhoc')
+  adhocTrigger(@Body() dto: PlaylistsDto, @Request() { user }: { user: User }) {
+    return this.playlistService.manualTrigger(dto, user);
+  }
 
   /**
    * Handles the start of a playlist based on the incoming message type.

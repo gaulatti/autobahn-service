@@ -9,10 +9,11 @@ import { PluginsService } from './plugins/plugins.service';
 import { StrategiesController } from './strategies/strategies.controller';
 import { StrategiesService } from './strategies/strategies.service';
 import { TriggersService } from './triggers/triggers.service';
+import { AuthorizationModule } from 'src/authorization/authorization.module';
 
 @Module({
   controllers: [PlaylistsController, PluginsController, StrategiesController],
-  imports: [DalModule, CoreModule, AssessmentsModule],
+  imports: [DalModule, CoreModule, AssessmentsModule, AuthorizationModule],
   providers: [
     PlaylistsService,
     StrategiesService,

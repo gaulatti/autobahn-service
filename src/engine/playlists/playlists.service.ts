@@ -1,3 +1,4 @@
+import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/sequelize';
@@ -5,16 +6,25 @@ import { nanoid } from 'nanoid';
 import { Op } from 'sequelize';
 import { HeartbeatsService } from 'src/assessments/heartbeats/heartbeats.service';
 import { PulsesService } from 'src/assessments/pulses/pulses.service';
+import { UsersService } from 'src/authorization/users/users.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
+import { PlaylistsDto } from 'src/engine/playlists/playlists.dto';
 import { Logger } from 'src/logger/logger.decorator';
 import { Playlist } from 'src/models/playlist.model';
 import { Pulse } from 'src/models/pulse.model';
 import { Strategy } from 'src/models/strategy.model';
+import { User } from 'src/models/user.model';
 import { getPaginationParams, getSortParams } from 'src/utils/lists';
 import { JSONLogger } from 'src/utils/logger';
 import { PluginsService } from '../plugins/plugins.service';
 import { StrategiesService } from '../strategies/strategies.service';
 import { TriggersService } from '../triggers/triggers.service';
+
+/**
+ * An instance of the AWS Lambda client.
+ * This client is used to interact with AWS Lambda services.
+ */
+const lambdaClient = new LambdaClient();
 
 /**
  * Service responsible for managing and processing playlists.
@@ -52,6 +62,7 @@ export class PlaylistsService {
     private readonly heartbeatsService: HeartbeatsService,
     private readonly notificationsService: NotificationsService,
     private readonly strategiesService: StrategiesService,
+    private readonly usersService: UsersService,
     @InjectModel(Playlist) private readonly playlist: typeof Playlist,
     @InjectModel(Pulse) private readonly pulse: typeof Pulse,
   ) {}
@@ -232,7 +243,22 @@ export class PlaylistsService {
     }
   }
 
-  /** This will be SNS-based. */
+  /**
+   * Triggers the execution of a strategy based on the provided message.
+   *
+   * @param message - The message containing the details for the trigger.
+   * @param message.url - The URL associated with the trigger.
+   * @param message.membership_id - The membership ID associated with the trigger.
+   * @param message.strategy - The ID of the strategy to be executed.
+   * @param message.isBeta - A flag indicating whether the trigger is for a beta environment.
+   *
+   * @returns A promise that resolves when the trigger has been processed.
+   *
+   * @remarks
+   * - If the trigger is for a beta environment and the current environment is not beta, the trigger will be skipped.
+   * - If the trigger is for a non-beta environment and the current environment is beta, the trigger will be skipped.
+   * - Logs the received SNS notification after processing the trigger.
+   */
   async trigger(message: {
     url: string;
     membership_id: number;
@@ -492,6 +518,39 @@ export class PlaylistsService {
 
         this.logger.log({ pulse, id: playlist.id });
       }
+    }
+  }
+
+  /**
+   * Triggers a new pulse and associated heartbeats, then broadcasts a notification to refresh the pulses table.
+   *
+   * @param dto - Data transfer object containing the necessary information to create a pulse.
+   * @returns An object containing the mobile and desktop heartbeat records.
+   */
+  async manualTrigger({ url }: PlaylistsDto, { id }: User) {
+    /**
+     * Retrieve the user record by the user ID.
+     */
+    const user = await this.usersService.findUser(id);
+
+    /**
+     * Invoke the adhoc trigger lambda function to create a new pulse.
+     * By now we're using the first team assigned.
+     */
+    const params = {
+      FunctionName: process.env.ADHOC_TRIGGER_LAMBDA_ARN,
+      Payload: JSON.stringify({
+        url,
+        membership_id: user.memberships.find(Boolean).id,
+        isBeta: process.env.IS_BETA == 'true',
+      }),
+    };
+
+    try {
+      const command = new InvokeCommand(params);
+      await lambdaClient.send(command);
+    } catch (error) {
+      this.logger.error('Error invoking lambda:', error);
     }
   }
 }

@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  Request,
-} from '@nestjs/common';
-import { User } from 'src/models/user.model';
-import { PulsesDto } from './pulses.dto';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { PulsesService } from './pulses.service';
 
 /**
@@ -47,16 +37,5 @@ export class PulsesController {
   @Get(':slug')
   getPulse(@Param('slug') slug: string) {
     return this.pulsesService.getPulse(slug);
-  }
-
-  /**
-   * Creates a new pulse.
-   *
-   * @param dto - The data transfer object containing the details of the pulse to be created.
-   * @returns The created pulse.
-   */
-  @Post()
-  createPulse(@Body() dto: PulsesDto, @Request() { user }: { user: User }) {
-    return this.pulsesService.triggerPulse(dto, user);
   }
 }
