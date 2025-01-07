@@ -43,6 +43,9 @@ export class User extends Model<User> {
   @Column(DataType.STRING(45))
   email!: string;
 
+  @Column({ field: 'last_access' })
+  lastAccess!: Date;
+
   @CreatedAt
   @Column({ field: 'created_at' })
   createdAt!: Date;

@@ -51,7 +51,16 @@ export class UsersService {
       user.last_name !== family_name ||
       user.email !== email
     ) {
-      await user.update({ name, last_name: family_name, email });
+      return user.update({
+        name,
+        last_name: family_name,
+        email,
+        lastAccess: new Date(),
+      });
+    } else {
+      return user.update({
+        lastAccess: new Date(),
+      });
     }
 
     return user;
