@@ -110,7 +110,8 @@ export class BackupService {
    */
   private async uploadToS3(filePath: string) {
     const fileStream = fs.createReadStream(filePath);
-    const key = `backups/backup-${new Date().toISOString()}.sql`;
+    const date = new Date();
+    const key = `backups/${date.getUTCFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${date.toISOString()}.sql`;
 
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
