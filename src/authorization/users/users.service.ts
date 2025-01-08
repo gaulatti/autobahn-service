@@ -62,7 +62,5 @@ export class UsersService {
         lastAccess: new Date(),
       });
     }
-
-    return user;
   }
 }
