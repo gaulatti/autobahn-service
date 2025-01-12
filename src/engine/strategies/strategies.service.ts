@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Plugin } from 'src/models/plugin.model';
 import { Slot } from 'src/models/slot.model';
 import { Strategy } from 'src/models/strategy.model';
+import { Target } from 'src/models/target.model';
 import { getPaginationParams, getSortParams } from 'src/utils/lists';
 
 @Injectable()
@@ -57,7 +58,7 @@ export class StrategiesService {
   async findById(id: number) {
     return this.strategy.findOne({
       where: { id },
-      include: [{ model: Slot, include: [Plugin] }],
+      include: [{ model: Slot, include: [Plugin] }, Target],
     });
   }
 }

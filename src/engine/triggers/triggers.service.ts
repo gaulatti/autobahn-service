@@ -4,6 +4,7 @@ import { Logger } from 'src/logger/logger.decorator';
 import { Plugin } from 'src/models/plugin.model';
 import { Slot } from 'src/models/slot.model';
 import { Strategy } from 'src/models/strategy.model';
+import { Target } from 'src/models/target.model';
 import { ScheduleContext, Trigger } from 'src/models/trigger.model';
 import { getNextExecution } from 'src/utils/cron';
 import { JSONLogger } from 'src/utils/logger';
@@ -60,7 +61,10 @@ export class TriggersService {
           ),
         },
         include: [
-          { model: Strategy, include: [{ model: Slot, include: [Plugin] }] },
+          {
+            model: Strategy,
+            include: [{ model: Slot, include: [Plugin] }, Target],
+          },
         ],
       });
 
