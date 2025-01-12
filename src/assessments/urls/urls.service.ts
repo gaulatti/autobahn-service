@@ -106,7 +106,16 @@ export class UrlsService {
       throw new Error(`Target with ID ${targetId} not found`);
     }
 
-    await url.$add('targets', target);
+    /**
+     * Check if the relation already exists
+     */
+    const exists = await url.$has('targets', target);
+
+    if (!exists) {
+      await url.$add('targets', target);
+    } else {
+      console.log('Relation already exists, skipping...');
+    }
   }
 
   /**

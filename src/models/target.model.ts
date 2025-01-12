@@ -13,7 +13,6 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript';
 import { Baseline } from './baseline.model';
-import { Pulse } from './pulse.model';
 import { TargetUrl } from './target.url.model';
 import { Url } from './url.model';
 
