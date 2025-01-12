@@ -18,6 +18,8 @@ import { Trigger } from './trigger.model';
 
 export type Manifest = {
   context: Record<string, any>;
+  target?: number;
+  fqdn: string;
   sequence: Slot[];
   executed_slots: Slot[];
 };

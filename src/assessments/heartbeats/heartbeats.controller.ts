@@ -43,7 +43,6 @@ export class HeartbeatsController {
     const pulse = await this.pulsesService.getPulse(slug);
     const isMobile = request.url.includes('mobile');
     return {
-      target: pulse.target,
       json: await this.heartbeatsService.getHeartbeat(
         pulse.playlistId ? pulse.id.toString() : slug,
         isMobile,

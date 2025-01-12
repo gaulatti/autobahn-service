@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { nanoid } from 'nanoid';
+import { nanoid } from '../../utils/nanoid';
 import { Op } from 'sequelize';
 import { UsersService } from 'src/authorization/users/users.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
@@ -45,7 +45,7 @@ export class PulsesService {
    * @returns A promise that resolves to an object containing the pulses and the count of pulses.
    */
   pulsesByTarget(
-    id: number,
+    slug: string,
     sort: string,
     from?: Date,
     to?: Date,
@@ -53,12 +53,10 @@ export class PulsesService {
     endRow?: number,
   ) {
     const paginationParams = getPaginationParams(startRow, endRow);
-
     return this.pulse.findAndCountAll({
       ...paginationParams,
       order: getSortParams(sort),
       where: {
-        targetId: id,
         createdAt: {
           [Op.between]: [from, to],
         },
@@ -69,8 +67,19 @@ export class PulsesService {
           as: 'heartbeats',
           include: [CwvMetric, LighthouseScore],
         },
-        { model: Url, as: 'url' },
-        Target,
+        {
+          model: Url,
+          as: 'url',
+          include: [
+            {
+              model: Target,
+              as: 'targets',
+              where: {
+                slug,
+              },
+            },
+          ],
+        },
       ],
       distinct: true,
     });
@@ -144,8 +153,7 @@ export class PulsesService {
           as: 'heartbeats',
           include: [CwvMetric, LighthouseScore],
         },
-        { model: Url, as: 'url' },
-        Target,
+        { model: Url, as: 'url', include: [Target] },
       ],
       where: {
         createdAt: {

@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 import { Baseline } from 'src/models/baseline.model';
+import { CwvMetric } from 'src/models/cwv.metric.model';
+import { Heartbeat } from 'src/models/heartbeat.model';
+import { LighthouseScore } from 'src/models/lighthouse.score.model';
+import { Pulse } from 'src/models/pulse.model';
 import { Target } from 'src/models/target.model';
+import { Url } from 'src/models/url.model';
 import { getPaginationParams, getSortParams } from 'src/utils/lists';
 import { calculateCWVStats, calculateScores } from 'src/utils/stats';
 import { PulsesService } from '../pulses/pulses.service';
@@ -58,9 +64,9 @@ export class TargetsService {
    * @returns A promise that resolves to the updated target.
    */
   async updateTarget(slug: string, dto: TargetsDto) {
-    const { stage, name } = dto;
+    const { name } = dto;
 
-    await this.target.update({ stage, name }, { where: { slug } });
+    await this.target.update({ name }, { where: { slug } });
 
     return this.getTarget(slug);
   }
@@ -72,12 +78,12 @@ export class TargetsService {
    * @returns The created target object.
    */
   async createTarget(dto: TargetsDto) {
-    const { stage, name } = dto;
+    const { name } = dto;
 
     /**
      * Create the target record
      */
-    return this.target.create({ stage, name, provider: 1 });
+    return this.target.create({ name });
   }
 
   /**
@@ -93,16 +99,52 @@ export class TargetsService {
     });
   }
 
-  async targetStats(id: number, sort: string, from?: Date, to?: Date) {
+  async targetPulses(
+    slug: string,
+    sort: string,
+    from?: Date,
+    to?: Date,
+    startRow?: number,
+    endRow?: number,
+  ) {
+    const paginationParams = getPaginationParams(startRow, endRow);
+
+    return this.target.findOne({
+      ...paginationParams,
+      order: getSortParams(sort),
+      where: {
+        slug,
+        createdAt: {
+          [Op.between]: [from, to],
+        },
+      },
+      include: [
+        {
+          model: Url,
+          include: [
+            {
+              model: Pulse,
+              include: [
+                { model: Heartbeat, include: [CwvMetric, LighthouseScore] },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+  }
+
+  async targetStats(slug: string, sort: string, from?: Date, to?: Date) {
     /**
      * Fetch the pulses for the provided URL
      */
-    const pulses = await this.pulsesService.pulsesByTarget(id, sort, from, to);
+    const target = await this.targetPulses(slug, sort, from, to);
 
     /**
      * Filter out pulses that don't have any completed heartbeats
      */
-    const statPulses = pulses.rows.filter(
+    const pulses = target.urls.flatMap((url) => url.pulses);
+    const statPulses = pulses.filter(
       (pulse: { heartbeats: { status: number }[] }) =>
         pulse.heartbeats.every((heartbeat) => heartbeat.status === 4),
     );
@@ -113,7 +155,7 @@ export class TargetsService {
     const scores = calculateScores(statPulses);
     const cwvStats = calculateCWVStats(statPulses);
 
-    return { cwvStats, scores };
+    return { target, cwvStats, scores };
   }
 
   async targetBySlug(slug: string) {

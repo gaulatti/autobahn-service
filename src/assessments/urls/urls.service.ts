@@ -1,10 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { nanoid } from 'nanoid';
-import { Pulse } from 'src/models/pulse.model';
+import { Target } from 'src/models/target.model';
 import { Url } from 'src/models/url.model';
 import { getPaginationParams } from 'src/utils/lists';
 import { calculateCWVStats, calculateScores } from 'src/utils/stats';
+import { nanoid } from '../../utils/nanoid';
 import { PulsesService } from '../pulses/pulses.service';
 
 /**
@@ -82,14 +82,31 @@ export class UrlsService {
     return this.url.findAndCountAll({
       include: [
         {
-          model: Pulse,
-          as: 'pulses',
-          where: { targets_id: id },
+          model: Target,
+          where: { id },
           required: true,
         },
       ],
       distinct: true,
     });
+  }
+
+  /**
+   * Attaches a given URL to a target by its ID.
+   *
+   * @param {Url} url - The URL instance to be attached to the target.
+   * @param {number} targetId - The ID of the target to which the URL will be attached.
+   * @throws {Error} Throws an error if the target with the specified ID is not found.
+   * @returns {Promise<void>} A promise that resolves when the URL has been successfully attached to the target.
+   */
+  async attachToTarget(url: Url, targetId: number): Promise<void> {
+    const target = await Target.findByPk(targetId);
+
+    if (!target) {
+      throw new Error(`Target with ID ${targetId} not found`);
+    }
+
+    await url.$add('targets', target);
   }
 
   /**

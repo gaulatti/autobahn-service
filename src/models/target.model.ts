@@ -30,20 +30,8 @@ export class Target extends Model<Target> {
   id!: number;
 
   @AllowNull(false)
-  @Column(DataType.INTEGER)
-  stage!: number;
-
-  @AllowNull(false)
-  @Column(DataType.INTEGER)
-  provider!: number;
-
-  @AllowNull(false)
   @Column(DataType.STRING(255))
   name!: string;
-
-  @AllowNull(true)
-  @Column(DataType.STRING(110))
-  lambdaArn?: string;
 
   @AllowNull(false)
   @Column(DataType.TEXT)
@@ -67,7 +55,4 @@ export class Target extends Model<Target> {
 
   @HasMany(() => Baseline)
   baselines!: Baseline[];
-
-  @HasMany(() => Pulse)
-  pulses!: Pulse[];
 }

@@ -15,7 +15,6 @@ import {
 } from 'sequelize-typescript';
 import { Heartbeat } from './heartbeat.model';
 import { Playlist } from './playlist.model';
-import { Target } from './target.model';
 import { Url } from './url.model';
 
 @Table({
@@ -30,20 +29,12 @@ export class Pulse extends Model<Pulse> {
   @Column(DataType.INTEGER)
   id!: number;
 
-  @ForeignKey(() => Target)
-  @AllowNull(true)
-  @Column({ field: 'targets_id', type: DataType.INTEGER })
-  targetId?: number;
-
   @ForeignKey(() => Url)
   @AllowNull(true)
   @Column({ field: 'url_id', type: DataType.INTEGER })
   urlId?: number;
 
   @ForeignKey(() => Playlist)
-  /**
-   * Temporary till plugins are fully implemented to support legacy ad-hoc executions.
-   */
   @AllowNull(true)
   @Column({ field: 'playlists_id', type: DataType.INTEGER })
   playlistId!: number;
@@ -65,9 +56,6 @@ export class Pulse extends Model<Pulse> {
   deletedAt?: Date;
 
   // Associations
-  @BelongsTo(() => Target)
-  target?: Target;
-
   @BelongsTo(() => Url)
   url?: Url;
 

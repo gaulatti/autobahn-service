@@ -1,6 +1,7 @@
 import {
   AllowNull,
   AutoIncrement,
+  BelongsTo,
   Column,
   CreatedAt,
   DataType,
@@ -14,6 +15,7 @@ import {
 } from 'sequelize-typescript';
 import { Project } from './project.model';
 import { Slot } from './slot.model';
+import { Target } from './target.model';
 import { Trigger } from './trigger.model';
 
 @Table({
@@ -33,9 +35,20 @@ export class Strategy extends Model<Strategy> {
   @Column(DataType.INTEGER)
   projectsId!: number;
 
+  @ForeignKey(() => Target)
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  targetsId!: number;
+
   @AllowNull(false)
   @Column(DataType.STRING(45))
   name!: string;
+
+  @BelongsTo(() => Target)
+  target?: Target;
+
+  @BelongsTo(() => Project)
+  project?: Project;
 
   @HasMany(() => Trigger)
   triggers!: Trigger[];

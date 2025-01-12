@@ -2,10 +2,10 @@ import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/sequelize';
-import { nanoid } from 'nanoid';
 import { Op } from 'sequelize';
 import { HeartbeatsService } from 'src/assessments/heartbeats/heartbeats.service';
 import { PulsesService } from 'src/assessments/pulses/pulses.service';
+import { UrlsService } from 'src/assessments/urls/urls.service';
 import { UsersService } from 'src/authorization/users/users.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
 import { PlaylistsDto } from 'src/engine/playlists/playlists.dto';
@@ -16,6 +16,7 @@ import { Strategy } from 'src/models/strategy.model';
 import { User } from 'src/models/user.model';
 import { getPaginationParams, getSortParams } from 'src/utils/lists';
 import { JSONLogger } from 'src/utils/logger';
+import { nanoid } from '../../utils/nanoid';
 import { PluginsService } from '../plugins/plugins.service';
 import { StrategiesService } from '../strategies/strategies.service';
 import { TriggersService } from '../triggers/triggers.service';
@@ -62,6 +63,7 @@ export class PlaylistsService {
     private readonly heartbeatsService: HeartbeatsService,
     private readonly notificationsService: NotificationsService,
     private readonly strategiesService: StrategiesService,
+    private readonly urlsService: UrlsService,
     private readonly usersService: UsersService,
     @InjectModel(Playlist) private readonly playlist: typeof Playlist,
     @InjectModel(Pulse) private readonly pulse: typeof Pulse,
@@ -163,6 +165,7 @@ export class PlaylistsService {
      */
     const manifest = {
       context,
+      target: strategy.target?.id,
       fqdn: process.env.AUTOBAHN_FQDN,
       sequence: [
         /**
@@ -477,6 +480,16 @@ export class PlaylistsService {
           url,
           playlistId: playlist.id,
         });
+
+        /**
+         * Attach the URL to the target
+         */
+        if (playlist.manifest.target) {
+          await this.urlsService.attachToTarget(
+            pulse.url,
+            playlist.manifest.target,
+          );
+        }
 
         /**
          * Create a heartbeat record for each output of the plugin.

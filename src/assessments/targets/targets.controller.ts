@@ -60,15 +60,10 @@ export class TargetsController {
     @Query('endRow') endRow: number,
   ) {
     /**
-     * Fetch the URL record by Slug
-     */
-    const target = await this.targetsService.targetBySlug(slug);
-
-    /**
      * Fetch all pulses associated with the target
      */
     return this.pulsesService.pulsesByTarget(
-      target.id,
+      slug,
       sort,
       from,
       to,
@@ -84,22 +79,7 @@ export class TargetsController {
     @Query('from') from: Date,
     @Query('to') to: Date,
   ) {
-    /**
-     * Fetch the URL record by Slug
-     */
-    const target = await this.targetsService.targetBySlug(slug);
-
-    /**
-     * Fetch the stats for the target
-     */
-    const stats = await this.targetsService.targetStats(
-      target.id,
-      sort,
-      from,
-      to,
-    );
-
-    return { target, ...stats };
+    return this.targetsService.targetStats(slug, sort, from, to);
   }
 
   @Get(':slug/urls')
