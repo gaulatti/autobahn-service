@@ -114,9 +114,6 @@ export class TargetsService {
       order: getSortParams(sort),
       where: {
         slug,
-        createdAt: {
-          [Op.between]: [from, to],
-        },
       },
       include: [
         {
@@ -127,6 +124,11 @@ export class TargetsService {
               include: [
                 { model: Heartbeat, include: [CwvMetric, LighthouseScore] },
               ],
+              where: {
+                createdAt: {
+                  [Op.between]: [from, to],
+                },
+              },
             },
           ],
         },
