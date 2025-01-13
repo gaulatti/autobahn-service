@@ -53,6 +53,7 @@ export class PulsesService {
     endRow?: number,
   ) {
     const paginationParams = getPaginationParams(startRow, endRow);
+
     return this.pulse.findAndCountAll({
       ...paginationParams,
       order: getSortParams(sort),
@@ -65,11 +66,13 @@ export class PulsesService {
         {
           model: Heartbeat,
           as: 'heartbeats',
+          required: true,
           include: [CwvMetric, LighthouseScore],
         },
         {
           model: Url,
           as: 'url',
+          required: true,
           include: [
             {
               model: Target,
@@ -77,6 +80,7 @@ export class PulsesService {
               where: {
                 slug,
               },
+              required: true,
             },
           ],
         },
