@@ -528,8 +528,6 @@ export class PlaylistsService {
             status: 4,
           });
         }
-
-        this.logger.log({ pulse, id: playlist.id });
       }
     }
   }

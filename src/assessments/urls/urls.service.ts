@@ -1,8 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Logger } from 'src/logger/logger.decorator';
 import { Target } from 'src/models/target.model';
 import { Url } from 'src/models/url.model';
 import { getPaginationParams } from 'src/utils/lists';
+import { JSONLogger } from 'src/utils/logger';
 import { calculateCWVStats, calculateScores } from 'src/utils/stats';
 import { nanoid } from '../../utils/nanoid';
 import { PulsesService } from '../pulses/pulses.service';
@@ -12,6 +14,12 @@ import { PulsesService } from '../pulses/pulses.service';
  */
 @Injectable()
 export class UrlsService {
+  /**
+   * Logger instance for logging messages.
+   */
+  @Logger(UrlsService.name)
+  private readonly logger!: JSONLogger;
+
   /**
    * Constructs a new instance of the UrlsService.
    *
@@ -114,8 +122,6 @@ export class UrlsService {
 
     if (!exists) {
       await url.$add('targets', target);
-    } else {
-      console.log('Relation already exists, skipping...');
     }
   }
 
