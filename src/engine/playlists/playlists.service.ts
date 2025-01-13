@@ -486,7 +486,7 @@ export class PlaylistsService {
          */
         if (playlist.manifest.target) {
           await this.urlsService.attachToTarget(
-            pulse.url,
+            pulse.urlId,
             playlist.manifest.target,
           );
         }

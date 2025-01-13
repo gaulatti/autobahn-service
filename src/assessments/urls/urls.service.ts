@@ -99,7 +99,8 @@ export class UrlsService {
    * @throws {Error} Throws an error if the target with the specified ID is not found.
    * @returns {Promise<void>} A promise that resolves when the URL has been successfully attached to the target.
    */
-  async attachToTarget(url: Url, targetId: number): Promise<void> {
+  async attachToTarget(urlId: number, targetId: number): Promise<void> {
+    const url = await Url.findByPk(urlId);
     const target = await Target.findByPk(targetId);
 
     if (!target) {
