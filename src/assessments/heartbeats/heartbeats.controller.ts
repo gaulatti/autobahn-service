@@ -44,7 +44,7 @@ export class HeartbeatsController {
     const isMobile = request.url.includes('mobile');
     return {
       json: await this.heartbeatsService.getHeartbeat(
-        pulse.playlistId ? pulse.id.toString() : slug,
+        pulse.playlistId ? pulse.playlistId.toString() : slug,
         isMobile,
       ),
     };
@@ -67,7 +67,7 @@ export class HeartbeatsController {
     const pulse = await this.pulsesService.getPulse(slug);
     const isMobile = request.url.includes('mobile');
     return this.heartbeatsService.getHeartbeatJSON(
-      pulse.playlistId ? pulse.id.toString() : slug,
+      pulse.playlistId ? pulse.playlistId.toString() : slug,
       isMobile,
       minified,
     );

@@ -191,7 +191,6 @@ export class PulsesService {
           include: [CwvMetric, LighthouseScore],
         },
         { model: Url },
-        { model: Target },
       ],
     });
   }
