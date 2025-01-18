@@ -17,6 +17,7 @@ import {
 import { Pulse } from './pulse.model';
 import { CwvMetric } from './cwv.metric.model';
 import { LighthouseScore } from './lighthouse.score.model';
+import { Platform } from './platform.model';
 
 @Table({
   tableName: 'heartbeats',
@@ -34,6 +35,11 @@ export class Heartbeat extends Model<Heartbeat> {
   @AllowNull(false)
   @Column({ field: 'pulses_id', type: DataType.INTEGER })
   pulseId!: number;
+
+  @ForeignKey(() => Platform)
+  @AllowNull(false)
+  @Column({ field: 'platforms_id', type: DataType.INTEGER })
+  platformId!: number;
 
   @AllowNull(false)
   @Default(0)
@@ -60,10 +66,6 @@ export class Heartbeat extends Model<Heartbeat> {
 
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  mode!: number;
-
-  @AllowNull(false)
-  @Column(DataType.INTEGER)
   status!: number;
 
   @CreatedAt
@@ -81,6 +83,9 @@ export class Heartbeat extends Model<Heartbeat> {
   // Associations
   @BelongsTo(() => Pulse)
   pulse!: Pulse;
+
+  @BelongsTo(() => Platform)
+  platform!: Platform;
 
   @HasMany(() => CwvMetric)
   cwvMetrics!: CwvMetric[];

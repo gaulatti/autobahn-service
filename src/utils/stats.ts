@@ -128,7 +128,8 @@ const calculateScores = (data: Pulse[]): ScoreEntry[] => {
    */
   data.forEach((pulse) => {
     pulse.heartbeats.forEach((heartbeat) => {
-      const scores = heartbeat.mode === 0 ? mobileScores : desktopScores;
+      const scores =
+        heartbeat.platform.type === 'mobile' ? mobileScores : desktopScores;
 
       heartbeat.lighthouseScores.forEach((score) => {
         if (score.performanceScore)
@@ -268,7 +269,8 @@ const calculateCWVStats = (data: Pulse[]): CWVStatsEntry[] => {
    */
   data.forEach((pulse) => {
     pulse.heartbeats.forEach((heartbeat) => {
-      const metrics = heartbeat.mode === 0 ? mobileMetrics : desktopMetrics;
+      const metrics =
+        heartbeat.platform.type === 'mobile' ? mobileMetrics : desktopMetrics;
       const timestamp = pulse.createdAt.toISOString();
 
       heartbeat.cwvMetrics.forEach((metric) => {

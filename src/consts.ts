@@ -1,4 +1,5 @@
 /**
+ * TODO: Deprecate this.
  * PageSpeedInsights ENUM data.
  */
 const PAGE_SPEED_INSIGHTS = 'PAGE_SPEED_INSIGHTS';
@@ -21,6 +22,7 @@ const MEMBER = 'MEMBER';
 const VIEWER = 'VIEWER';
 
 /**
+ * TODO: Deprecate this.
  * ViewportMode ENUM data.
  */
 const MOBILE = 'MOBILE';
@@ -56,9 +58,16 @@ const MIN = 'MIN';
 const MAX = 'MAX';
 
 const ENUMS = {
+  /**
+   * TODO: Deprecate PulseProvider. This is being handled in the plugins.
+   */
   PulseProvider: [PAGE_SPEED_INSIGHTS, ECS_LIGHTHOUSE],
+
   Stage: [ALPHA, BETA, STAGING, PRODUCTION],
   TeamRole: [ADMIN, MAINTAINER, MEMBER, VIEWER],
+  /**
+   * TODO: Deprecate ViewportMode and move to the Platforms table usage.
+   */
   ViewportMode: [MOBILE, DESKTOP],
   HearbeatStatus: [
     PENDING,
@@ -74,35 +83,35 @@ const ENUMS = {
 };
 
 export {
-  PAGE_SPEED_INSIGHTS,
-  ECS_LIGHTHOUSE,
-  ALPHA,
-  BETA,
-  STAGING,
-  PRODUCTION,
   ADMIN,
-  MAINTAINER,
-  MEMBER,
-  VIEWER,
-  MOBILE,
+  ALPHA,
+  AVG,
+  BETA,
+  DAILY,
   DESKTOP,
-  PENDING,
-  RUNNING,
-  RETRYING,
-  LIGHTHOUSE_FINISHED,
-  PLEASANTNESS_FINISHED,
   DONE,
+  ECS_LIGHTHOUSE,
+  ENUMS,
   FAILED,
   HOURLY,
-  DAILY,
-  WEEKLY,
+  LIGHTHOUSE_FINISHED,
+  MAINTAINER,
+  MAX,
+  MEDIAN,
+  MEMBER,
+  MIN,
+  MOBILE,
   MONTHLY,
   P90,
   P95,
   P99,
-  AVG,
-  MEDIAN,
-  MIN,
-  MAX,
-  ENUMS,
+  PAGE_SPEED_INSIGHTS,
+  PENDING,
+  PLEASANTNESS_FINISHED,
+  PRODUCTION,
+  RETRYING,
+  RUNNING,
+  STAGING,
+  VIEWER,
+  WEEKLY,
 };

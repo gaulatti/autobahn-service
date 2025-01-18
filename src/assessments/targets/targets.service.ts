@@ -5,6 +5,7 @@ import { Baseline } from 'src/models/baseline.model';
 import { CwvMetric } from 'src/models/cwv.metric.model';
 import { Heartbeat } from 'src/models/heartbeat.model';
 import { LighthouseScore } from 'src/models/lighthouse.score.model';
+import { Platform } from 'src/models/platform.model';
 import { Pulse } from 'src/models/pulse.model';
 import { Target } from 'src/models/target.model';
 import { Url } from 'src/models/url.model';
@@ -122,7 +123,10 @@ export class TargetsService {
             {
               model: Pulse,
               include: [
-                { model: Heartbeat, include: [CwvMetric, LighthouseScore] },
+                {
+                  model: Heartbeat,
+                  include: [CwvMetric, LighthouseScore, Platform],
+                },
               ],
               where: {
                 createdAt: {

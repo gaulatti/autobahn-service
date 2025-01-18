@@ -17,6 +17,7 @@ import { User } from 'src/models/user.model';
 import { getPaginationParams, getSortParams } from 'src/utils/lists';
 import { JSONLogger } from 'src/utils/logger';
 import { nanoid } from '../../utils/nanoid';
+import { PlatformsService } from '../platforms/platforms.service';
 import { PluginsService } from '../plugins/plugins.service';
 import { StrategiesService } from '../strategies/strategies.service';
 import { TriggersService } from '../triggers/triggers.service';
@@ -60,6 +61,7 @@ export class PlaylistsService {
     private readonly pluginsService: PluginsService,
     private readonly triggersService: TriggersService,
     private readonly pulsesService: PulsesService,
+    private readonly platformsService: PlatformsService,
     private readonly heartbeatsService: HeartbeatsService,
     private readonly notificationsService: NotificationsService,
     private readonly strategiesService: StrategiesService,
@@ -495,8 +497,12 @@ export class PlaylistsService {
          * Create a heartbeat record for each output of the plugin.
          */
         for (const item of pluginOutputs[plugin]) {
+          const platform = await this.platformsService.findOrCreate(
+            item.simplifiedResult.userAgent,
+            item.simplifiedResult.mode,
+          );
           const heartbeat = await this.heartbeatsService.createHeartbeat(
-            item.simplifiedResult.mode === 'mobile',
+            platform.id,
             pulse.id,
           );
 

@@ -6,6 +6,7 @@ import { CwvMetric } from 'src/models/cwv.metric.model';
 import { Heartbeat } from 'src/models/heartbeat.model';
 import { LighthouseScore } from 'src/models/lighthouse.score.model';
 import { Membership } from 'src/models/membership.model';
+import { Platform } from 'src/models/platform.model';
 import { Playlist } from 'src/models/playlist.model';
 import { Plugin } from 'src/models/plugin.model';
 import { Project } from 'src/models/project.model';
@@ -32,6 +33,7 @@ import { BackupService } from './backup/backup.service';
       Playlist,
       Plugin,
       Project,
+      Platform,
       Pulse,
       Slot,
       Strategy,

@@ -1,19 +1,19 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { nanoid } from '../../utils/nanoid';
 import { Op } from 'sequelize';
-import { UsersService } from 'src/authorization/users/users.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
 import { Logger } from 'src/logger/logger.decorator';
 import { CwvMetric } from 'src/models/cwv.metric.model';
 import { Heartbeat } from 'src/models/heartbeat.model';
 import { LighthouseScore } from 'src/models/lighthouse.score.model';
+import { Platform } from 'src/models/platform.model';
 import { Pulse } from 'src/models/pulse.model';
 import { Target } from 'src/models/target.model';
 import { Url } from 'src/models/url.model';
 import { getPaginationParams, getSortParams } from 'src/utils/lists';
 import { JSONLogger } from 'src/utils/logger';
 import { prependWWW } from 'src/utils/pulses';
+import { nanoid } from '../../utils/nanoid';
 import { UrlsService } from '../urls/urls.service';
 import { PulsesDto } from './pulses.dto';
 
@@ -25,7 +25,6 @@ export class PulsesService {
     @Inject(forwardRef(() => UrlsService))
     private readonly urlsService: UrlsService,
     private readonly notificationsService: NotificationsService,
-    private readonly usersService: UsersService,
   ) {}
 
   /**
@@ -67,7 +66,7 @@ export class PulsesService {
           model: Heartbeat,
           as: 'heartbeats',
           required: true,
-          include: [CwvMetric, LighthouseScore],
+          include: [CwvMetric, LighthouseScore, Platform],
         },
         {
           model: Url,
@@ -122,7 +121,7 @@ export class PulsesService {
         {
           model: Heartbeat,
           as: 'heartbeats',
-          include: [CwvMetric, LighthouseScore],
+          include: [CwvMetric, LighthouseScore, Platform],
         },
         { model: Url, as: 'url' },
       ],
@@ -155,7 +154,7 @@ export class PulsesService {
         {
           model: Heartbeat,
           as: 'heartbeats',
-          include: [CwvMetric, LighthouseScore],
+          include: [CwvMetric, LighthouseScore, Platform],
         },
         { model: Url, as: 'url', include: [Target] },
       ],
@@ -188,7 +187,7 @@ export class PulsesService {
         {
           model: Heartbeat,
           as: 'heartbeats',
-          include: [CwvMetric, LighthouseScore],
+          include: [CwvMetric, LighthouseScore, Platform],
         },
         { model: Url },
       ],

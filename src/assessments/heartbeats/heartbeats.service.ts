@@ -100,14 +100,15 @@ export class HeartbeatsService {
     /**
      * Retrieve the viewport ID from the path parameters.
      */
-    const viewportIndex = isMobile ? 0 : 1;
+    const mode = isMobile ? 'mobile' : 'desktop';
     const pulse = await this.pulsesService.getPulse(slug);
 
     const {
       url: { url },
     } = pulse;
     const { id, retries } = pulse.heartbeats.find(
-      ({ mode }: { mode: number }) => mode === viewportIndex,
+      ({ platform: { type } }: { platform: { type: 'desktop' | 'mobile' } }) =>
+        type === mode,
     );
 
     /**
@@ -125,47 +126,11 @@ export class HeartbeatsService {
       Message: JSON.stringify({
         url: url,
         slug,
-        mode: isMobile ? 'mobile' : 'desktop',
+        mode,
       }),
       TopicArn: process.env.TRIGGER_TOPIC_ARN,
     });
 
-    const execution = await snsClient.send(command);
-
-    return { execution };
-  }
-
-  /**
-   * Triggers a heartbeat by creating a heartbeat record and publishing a message to an SNS topic.
-   *
-   * @param slug - The unique identifier for the heartbeat.
-   * @param url - The URL to be included in the heartbeat message.
-   * @param isMobile - A boolean indicating if the heartbeat is for a mobile device.
-   * @param id - The identifier for the heartbeat record.
-   * @returns An object containing the execution result of the SNS publish command.
-   */
-  async triggerHeartbeat(
-    slug: string,
-    url: string,
-    isMobile: boolean,
-    id: number,
-  ) {
-    /**
-     * Create the heartbeat record.
-     */
-    await this.createHeartbeat(isMobile, id);
-
-    /**
-     * Trigger the execution.
-     */
-    const command = new PublishCommand({
-      Message: JSON.stringify({
-        url: url,
-        slug,
-        mode: isMobile ? 'mobile' : 'desktop',
-      }),
-      TopicArn: process.env.TRIGGER_TOPIC_ARN,
-    });
     const execution = await snsClient.send(command);
 
     return { execution };
@@ -178,13 +143,13 @@ export class HeartbeatsService {
    * @param {number} id - The ID associated with the heartbeat.
    * @returns {Promise<any>} A promise that resolves to the created heartbeat record.
    */
-  async createHeartbeat(isMobile: boolean, id: number) {
+  async createHeartbeat(platformId: number, id: number): Promise<any> {
     /**
      * Create the heartbeat record.
      */
     return await this.heartbeat.create({
       pulseId: id,
-      mode: isMobile ? 0 : 1,
+      platformId,
       status: 0,
     });
   }
