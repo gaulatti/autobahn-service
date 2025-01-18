@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { Baseline } from 'src/models/baseline.model';
@@ -141,6 +141,16 @@ export class TargetsService {
      * Fetch the pulses for the provided URL
      */
     const target = await this.targetPulses(slug, sort, from, to);
+
+    /**
+     * Throw an exception if the target is not found
+     */
+    if (!target) {
+      throw new HttpException(
+        'This target has no associated data',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     /**
      * Filter out pulses that don't have any completed heartbeats
