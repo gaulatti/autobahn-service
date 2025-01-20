@@ -445,23 +445,23 @@ export class PlaylistsService {
   }
 
   /**
-   * Stores the output of a playlist by processing the allowed plugins.
+   * Stores the output of the given playlist for the allowed plugins.
    *
-   * @param playlist - The playlist object containing the manifest and context.
-   * @param allowedPlugins - An array of strings representing the allowed plugins.
+   * @param {Playlist} playlist - The playlist object containing the manifest and other details.
+   * @param {string[]} allowedPlugins - An array of allowed plugin names to process.
    *
-   * @returns A promise that resolves when the output has been stored.
+   * @returns {Promise<void>} - A promise that resolves when the output has been stored.
    *
    * @remarks
-   * This method retrieves the URL record by its fully qualified domain name (FQDN),
-   * logs the URL and URL record, and processes each allowed plugin. Currently, it only
-   * saves the output for the `AutobahnInternalLighthouseProviderPlugin`.
+   * This method processes the output of specific plugins (AutobahnInternalLighthouseProviderPlugin and AutobahnPageSpeedInsightsProviderPlugin)
+   * by creating pulse and heartbeat records, attaching URLs to targets, and adding CWV metrics and Lighthouse scores.
    *
-   * For the `AutobahnInternalLighthouseProviderPlugin`, it creates a pulse record for the URL,
-   * and then creates a heartbeat record for each output of the plugin. The heartbeat record
-   * is updated with the output data, including various performance metrics and scores.
-   *
-   * The method logs the pulse and playlist ID after processing.
+   * @example
+   * ```typescript
+   * const playlist = { /* playlist object * / };
+   * const allowedPlugins = ['AutobahnInternalLighthouseProviderPlugin', 'AutobahnPageSpeedInsightsProviderPlugin'];
+   * await storeOutput(playlist, allowedPlugins);
+   * ```
    */
   async storeOutput(playlist: Playlist, allowedPlugins: string[]) {
     const {
