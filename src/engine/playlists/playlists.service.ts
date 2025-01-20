@@ -472,9 +472,12 @@ export class PlaylistsService {
 
     for (const plugin of allowedPlugins) {
       /**
-       * By now we're only saving the AutobahnInternalLighthouseProviderPlugin
+       * By now we're only saving the AutobahnInternalLighthouseProviderPlugin and AutobahnPageSpeedInsightsProviderPlugin
        */
-      if (plugin.includes('AutobahnInternalLighthouseProviderPlugin')) {
+      if (
+        plugin.includes('AutobahnInternalLighthouseProviderPlugin') ||
+        plugin.includes('AutobahnPageSpeedInsightsProviderPlugin')
+      ) {
         /**
          * Create a pulse record for the URL
          */
