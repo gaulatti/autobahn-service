@@ -125,7 +125,9 @@ export class PluginsService {
   private async run(current: Slot, playlist: Playlist) {
     const params = {
       FunctionName: current.plugin.arn,
-      Payload: JSON.stringify({ playlist, current: current.plugin.arn }),
+      Payload: JSON.stringify({
+        playlist: { ...playlist, current: current.plugin.arn },
+      }),
     };
 
     try {
