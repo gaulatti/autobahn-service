@@ -41,6 +41,10 @@ export class Slot extends Model<Slot> {
   order!: number;
 
   @AllowNull(false)
+  @Column({ type: DataType.INTEGER, field: 'max_retries', defaultValue: 0 })
+  maxRetries!: number;
+
+  @AllowNull(false)
   @Column({ type: DataType.INTEGER, field: 'min_outputs' })
   minOutputs!: number;
 
