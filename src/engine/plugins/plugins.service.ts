@@ -126,7 +126,7 @@ export class PluginsService {
     const params = {
       FunctionName: current.plugin.arn,
       Payload: JSON.stringify({
-        playlist: { ...playlist, current: current.plugin.arn },
+        playlist,
       }),
     };
 
