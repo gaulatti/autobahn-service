@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Patch, Query, Request } from '@nestjs/common';
 import { PulsesService } from '../pulses/pulses.service';
 import { HeartbeatsService } from './heartbeats.service';
+import { Public } from 'src/decorators/public.decorator';
 
 /**
  * Controller for handling heartbeat-related operations.
@@ -25,6 +26,7 @@ import { HeartbeatsService } from './heartbeats.service';
  * @param {PulsesService} pulsesService - The service for handling pulse operations.
  */
 @Controller('pulses/:slug')
+@Public()
 export class HeartbeatsController {
   constructor(
     private readonly heartbeatsService: HeartbeatsService,
@@ -39,6 +41,7 @@ export class HeartbeatsController {
    * @returns An object containing the target pulse and the heartbeat data.
    */
   @Get(['desktop', 'mobile'])
+  @Public()
   async getHeartbeat(@Request() request: Request, @Param('slug') slug: string) {
     const pulse = await this.pulsesService.getPulse(slug);
     const isMobile = request.url.includes('mobile');
@@ -59,6 +62,7 @@ export class HeartbeatsController {
    * @returns The heartbeat JSON data.
    */
   @Get(['desktop/json', 'mobile/json'])
+  @Public()
   async getHeartbeatJSON(
     @Request() request: Request,
     @Param('slug') slug: string,

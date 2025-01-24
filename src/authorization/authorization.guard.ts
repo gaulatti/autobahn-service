@@ -1,5 +1,7 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
+import { IS_PUBLIC_KEY } from 'src/decorators/public.decorator';
 
 /**
  * Array of allowed topics for the playlist service.
@@ -17,6 +19,9 @@ const allowedTopics = JSON.parse(process.env.ALLOWED_TOPICS || '[]');
  */
 @Injectable()
 export class AuthorizationGuard extends AuthGuard('jwt') {
+  constructor(private readonly reflector: Reflector) {
+    super();
+  }
   /**
    * Determines whether the current request is authorized to proceed.
    *
@@ -29,7 +34,17 @@ export class AuthorizationGuard extends AuthGuard('jwt') {
    * @returns `true` if the request is authorized, otherwise the result of the parent `canActivate` method.
    */
   canActivate(context: ExecutionContext) {
-    console.log(context)
+    // Check if the handler (or class) has the `isPublic` metadata
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) {
+      // If `@Public()` is set, skip JWT auth
+      return true;
+    }
+
     /**
      * Extract the request object from the context.
      */

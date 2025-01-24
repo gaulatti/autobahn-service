@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { PulsesService } from './pulses.service';
+import { Public } from 'src/decorators/public.decorator';
 
 /**
  * Controller for handling pulse-related operations.
@@ -18,6 +19,7 @@ export class PulsesController {
    * @returns {Promise<any>} A promise that resolves to the list of pulses.
    */
   @Get()
+  @Public()
   getPulses(
     @Query('sort') sort: string,
     @Query('from') from: Date,
@@ -35,6 +37,7 @@ export class PulsesController {
    * @returns The pulse object associated with the given slug.
    */
   @Get(':slug')
+  @Public()
   getPulse(@Param('slug') slug: string) {
     return this.pulsesService.getPulse(slug);
   }

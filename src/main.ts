@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
@@ -38,7 +38,8 @@ async function bootstrap() {
   /**
    * Sets the global guard for the application to the AuthorizationGuard.
    */
-  app.useGlobalGuards(new AuthorizationGuard());
+  const reflector = app.get(Reflector);
+  app.useGlobalGuards(new AuthorizationGuard(reflector));
 
   await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }

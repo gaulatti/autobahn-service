@@ -12,6 +12,7 @@ import { PulsesService } from '../pulses/pulses.service';
 import { UrlsService } from '../urls/urls.service';
 import { TargetsDto } from './targets.dto';
 import { TargetsService } from './targets.service';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('targets')
 export class TargetsController {
@@ -22,6 +23,7 @@ export class TargetsController {
   ) {}
 
   @Get()
+  @Public()
   async allTargets(
     @Query('sort') sort: string,
     @Query('startRow') startRow: number,
@@ -36,6 +38,7 @@ export class TargetsController {
   }
 
   @Get(':slug')
+  @Public()
   async getTarget(@Param('slug') slug: string) {
     return this.targetsService.getTarget(slug);
   }
@@ -51,6 +54,7 @@ export class TargetsController {
   }
 
   @Get(':slug/pulses')
+  @Public()
   async pulses(
     @Param('slug') slug: string,
     @Query('sort') sort: string,
@@ -73,6 +77,7 @@ export class TargetsController {
   }
 
   @Get(':slug/stats')
+  @Public()
   async stats(
     @Param('slug') slug: string,
     @Query('sort') sort: string,
@@ -83,6 +88,7 @@ export class TargetsController {
   }
 
   @Get(':slug/urls')
+  @Public()
   async urls(@Param('slug') slug: string) {
     /**
      * Fetch the URL record by Slug

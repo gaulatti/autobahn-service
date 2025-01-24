@@ -69,7 +69,7 @@ const ENUMS = {
    * TODO: Deprecate ViewportMode and move to the Platforms table usage.
    */
   ViewportMode: [MOBILE, DESKTOP],
-  HearbeatStatus: [
+  HeartbeatStatus: [
     PENDING,
     RUNNING,
     LIGHTHOUSE_FINISHED,
