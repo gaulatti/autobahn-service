@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Op, Sequelize } from 'sequelize';
-import { Logger } from 'src/logger/logger.decorator';
+import { Logger } from 'src/decorators/logger.decorator';
 import { Plugin } from 'src/models/plugin.model';
 import { Slot } from 'src/models/slot.model';
 import { Strategy } from 'src/models/strategy.model';

@@ -1,6 +1,6 @@
 import { Injectable, MessageEvent } from '@nestjs/common';
 import { Observable, Subject, filter, map } from 'rxjs';
-import { Logger } from 'src/logger/logger.decorator';
+import { Logger } from 'src/decorators/logger.decorator';
 import { JSONLogger } from 'src/utils/logger';
 import { CommonNotifications } from './common.notifications';
 import { INotificationsService } from './notifications.service.interface';

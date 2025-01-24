@@ -8,7 +8,7 @@ import {
   Request,
 } from '@nestjs/common';
 import axios from 'axios';
-import { Logger } from 'src/logger/logger.decorator';
+import { Logger } from 'src/decorators/logger.decorator';
 import { User } from 'src/models/user.model';
 import { JSONLogger } from 'src/utils/logger';
 import { PlaylistsDto } from './playlists.dto';

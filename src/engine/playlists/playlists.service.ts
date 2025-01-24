@@ -9,7 +9,7 @@ import { UrlsService } from 'src/assessments/urls/urls.service';
 import { UsersService } from 'src/authorization/users/users.service';
 import { NotificationsService } from 'src/core/notifications/notifications.service';
 import { PlaylistsDto } from 'src/engine/playlists/playlists.dto';
-import { Logger } from 'src/logger/logger.decorator';
+import { Logger } from 'src/decorators/logger.decorator';
 import { Playlist } from 'src/models/playlist.model';
 import { Pulse } from 'src/models/pulse.model';
 import { Strategy } from 'src/models/strategy.model';

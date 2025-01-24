@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Logger } from 'src/logger/logger.decorator';
+import { Logger } from 'src/decorators/logger.decorator';
 import { Target } from 'src/models/target.model';
 import { Url } from 'src/models/url.model';
 import { getPaginationParams } from 'src/utils/lists';

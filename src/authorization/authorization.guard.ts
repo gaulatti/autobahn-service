@@ -29,6 +29,7 @@ export class AuthorizationGuard extends AuthGuard('jwt') {
    * @returns `true` if the request is authorized, otherwise the result of the parent `canActivate` method.
    */
   canActivate(context: ExecutionContext) {
+    console.log(context)
     /**
      * Extract the request object from the context.
      */
