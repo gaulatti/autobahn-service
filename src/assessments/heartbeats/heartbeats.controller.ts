@@ -62,14 +62,15 @@ export class HeartbeatsController {
   async getHeartbeatJSON(
     @Request() request: Request,
     @Param('slug') slug: string,
-    @Query('minified') minified: boolean = false,
+    @Query('minified') minified?: string,
   ) {
     const pulse = await this.pulsesService.getPulse(slug);
     const isMobile = request.url.includes('mobile');
+
     return this.heartbeatsService.getHeartbeatJSON(
       pulse.playlistId ? pulse.playlistId.toString() : slug,
       isMobile,
-      minified,
+      typeof minified === 'string',
     );
   }
 
