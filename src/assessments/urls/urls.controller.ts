@@ -2,6 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { PulsesService } from '../pulses/pulses.service';
 import { TargetsService } from '../targets/targets.service';
 import { UrlsService } from './urls.service';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('urls')
 export class UrlsController {
@@ -12,6 +13,7 @@ export class UrlsController {
   ) {}
 
   @Get()
+  @Public()
   async allUrls(
     @Query('startRow') startRow: number,
     @Query('endRow') endRow: number,
@@ -20,6 +22,7 @@ export class UrlsController {
   }
 
   @Get(':slug/stats')
+  @Public()
   async stats(
     @Param('slug') slug: string,
     @Query('sort') sort: string,
@@ -40,6 +43,7 @@ export class UrlsController {
   }
 
   @Get(':slug/pulses')
+  @Public()
   async pulses(
     @Param('slug') slug: string,
     @Query('sort') sort: string,
@@ -60,6 +64,7 @@ export class UrlsController {
   }
 
   @Get(':slug/targets')
+  @Public()
   async targets(@Param('slug') slug: string) {
     return this.targetsService.targetsByUrl(slug);
   }
